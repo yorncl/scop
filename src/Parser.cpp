@@ -92,7 +92,7 @@ Object* Parser::read_obj(char* filename)
 				}
 				catch(std::out_of_range &e)
 				{
-					throw ParsingError("Vertex coordinates out of range for a float", filename, linenumber);
+					throw ParsingError("Vertex coordinates out of range", filename, linenumber);
 				}
 			}
 			// Polygonal face element
@@ -100,11 +100,30 @@ Object* Parser::read_obj(char* filename)
 			{
 				if (tokens.size() < 4)
 					throw ParsingError("Needs at least 3 vertices index", filename, linenumber);
-
+				try
+				{
+					obj->indices.push_back(std::stoi(tokens[1]));
+					obj->indices.push_back(std::stoi(tokens[2]));
+					obj->indices.push_back(std::stoi(tokens[3]));
+					// TODO better triangulation algorithm
+					if (tokens.size() > 4)
+					{
+						obj->indices.push_back(std::stoi(tokens[2]));
+						obj->indices.push_back(std::stoi(tokens[3]));
+						obj->indices.push_back(std::stoi(tokens[4]));
+					}
+				}
+				catch(std::invalid_argument &e)
+				{
+					throw ParsingError("Indices malformed", filename, linenumber);
+				}
+				catch(std::out_of_range &e)
+				{
+					throw ParsingError("Indices out of range", filename, linenumber);
+				}
 			}
-			std::cout << std::endl;
 			tokens.clear();
-			//convert all negative vertices
+			//TODO convert all negative vertices
 		}
 		if (obj->name == "")
 			obj->name = "default_name";

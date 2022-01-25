@@ -28,8 +28,8 @@ endif
 	$(CC) $(CFLAGS) -c $^ -o $@  $(INC)
 
 all : $(NAME)
-$(NAME) :  $(OBJ)  $(HEADERS)
-	$(CC) $(CFLAGS)  $(OBJ) $(LIBFT) -o $(NAME) $(INC) $(LDFLAGS)
+$(NAME) :  $(OBJ) src/glad.o  $(HEADERS)
+	$(CC) $(CFLAGS)  $(OBJ) src/glad.o $(LIBFT) -o $(NAME) $(INC) $(LDFLAGS)
 
 clean:
 	$(RM) $(OBJ)
