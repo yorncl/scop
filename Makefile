@@ -3,10 +3,11 @@
 CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g -std=c++11
 CC = g++
 SRC = $(wildcard src/*.cpp)
-LDFLAGS= -ldl -lm -L ./lib/libglfw3 -lglfw3
+LDFLAGS= -lm -L ./lib/libglfw3 -lglfw3 -ldl
 HEADERS = $(wildcard src/*.hpp)
 OBJ = $(SRC:%.cpp=%.o)
 NAME=scop
+INC= -I ./include
 
 ifeq ($(OS),Windows_NT)
 	@echo Build not supported on Windows rip
@@ -38,4 +39,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re run
+.PHONY: all clean fclean re
