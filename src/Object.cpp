@@ -3,7 +3,7 @@
 
 std::ostream& operator<<(std::ostream& os, Object& obj)
 {
-	(void) obj;
-	os << "Logging the object" << std::endl;
+	os << "Object name : " << obj.name << std::endl;
+	os << "\t" << "Number of vertices :"  << obj.vertices.size()/3 << std::endl;
 	return os;
 }

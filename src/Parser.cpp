@@ -62,7 +62,6 @@ Object* Parser::read_obj(char* filename)
 			linenumber++;
 			if (line.length() == 0)
 				continue;
-
 			//split the line
 			split(line, tokens);
 
@@ -74,14 +73,27 @@ Object* Parser::read_obj(char* filename)
 				// if the name isn't defined
 				if (tokens.size() != 2)
 					throw ParsingError("Object name malformed", filename, linenumber);
-				obj->name = tokens[2];
+				obj->name = tokens[1];
 			}
 			// vertex coordinates
 			if (tokens[0] == "v")
 			{
 				if (tokens.size() != 4)
 					throw ParsingError("Vertex malformed", filename, linenumber);
-				
+				try 
+				{
+					obj->vertices.push_back(std::stof(tokens[1]));
+					obj->vertices.push_back(std::stof(tokens[2]));
+					obj->vertices.push_back(std::stof(tokens[3]));
+				}
+				catch(std::invalid_argument &e)
+				{
+					throw ParsingError("Vertex coordinates malformed", filename, linenumber);
+				}
+				catch(std::out_of_range &e)
+				{
+					throw ParsingError("Vertex coordinates out of range for a float", filename, linenumber);
+				}
 			}
 			// Polygonal face element
 			if (tokens[0] == "f")
