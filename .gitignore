@@ -1,0 +1,4 @@
+scop
+lib/
+glfw/
+*.o
