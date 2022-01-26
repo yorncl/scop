@@ -1,6 +1,6 @@
 
 
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g -std=c++11
+CFLAGS = -Wall -Wextra -Werror  -g -std=c++11
 CC = g++
 SRC = $(wildcard src/*.cpp)
 LDFLAGS= -lm -L ./lib/libglfw3 -lglfw3 -ldl

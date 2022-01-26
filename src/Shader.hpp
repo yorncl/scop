@@ -9,13 +9,16 @@ class Shader
 {
 	public:
 	std::string _source;
-	unsigned int _type;
+	GLuint _type;
 	unsigned int _id;
 	
 
 	//TODO Coplien form ?
 	Shader();
+	Shader(const Shader&);
 	Shader(unsigned int type);
+	
+	Shader& operator=(const Shader& s);
 	
 	void compile();
 	void from_file(const std::string& filename);

@@ -50,6 +50,6 @@ void main() {
  	0.0, 0.0, - 2 * f * n / (f - n ), 0.0
  	);
 
-gl_Position =  projection * view * rotation * model * vec4(position, 1);
+ gl_Position =  projection * view * rotation * model * vec4(position, 1);
  TexCoord = position.xy;
 }

@@ -16,8 +16,22 @@ Shader::Shader()
 {
 }
 
+Shader::Shader(const Shader& s)
+{
+	_type = s._type;
+	_source = s._source;
+}
+
 Shader::Shader(unsigned int type) : _type(type)
 {
+}
+
+Shader& Shader::operator=(const Shader& s)
+{
+	
+	_type = s._type;
+	_source = s._source;
+	return *this;
 }
 
 void Shader::from_file(const std::string& filename)
@@ -42,7 +56,8 @@ void Shader::compile()
 	char infoLog[512]; // TODO change this 
 	glGetShaderInfoLog(_id, 512, NULL, infoLog);
 	infoLog[511] = 0; // TODO very hacky
-	fprintf(stderr, "%s", infoLog);
+	std::cerr << infoLog << std::endl;
 	if (res == GL_FALSE)
 		throw ShaderCompilationError();
+	std::cout << "Shader compiled !" << std::endl;
 }

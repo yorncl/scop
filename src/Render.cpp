@@ -13,7 +13,9 @@ Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 void Render::load_shaders()
 {
 	_vs = Shader(GL_VERTEX_SHADER);
-	_vs = Shader(GL_FRAGMENT_SHADER);
+	_fs = Shader(GL_FRAGMENT_SHADER);
+	_vs._type = GL_VERTEX_SHADER;
+	_fs._type = GL_FRAGMENT_SHADER;
 	_vs.from_file("src/shaders/vertex.glsl");
 	_fs.from_file("src/shaders/fragment.glsl");
 }
@@ -33,7 +35,7 @@ void Render::compile_program()
 	glLinkProgram(_shader_program);
 
 	// check the linking status
-	int success;
+	int success = 1;
 	glGetProgramiv(_shader_program, GL_LINK_STATUS, &success);
 	if (!success) {
 		char infoLog[512]; // TODO change this 
@@ -60,7 +62,8 @@ void Render::render_loop()
 	// binding the vertex array object and its buffer
 	glBindVertexArray(_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferData(GL_ARRAY_BUFFER, _obj->vertices.size(), _obj->vertices.data(), GL_STATIC_DRAW);
+
+	glBufferData(GL_ARRAY_BUFFER, _obj->vertices.size() * sizeof(float), _obj->vertices.data() , GL_STATIC_DRAW);
 	// vertex attrib pointer
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
@@ -79,7 +82,7 @@ void Render::render_loop()
 	{
 		glGenBuffers(1, &_EBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->indices.size(), _obj->indices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->indices.size() * sizeof(GLuint), _obj->indices.data(), GL_STATIC_DRAW);
 	}
         glEnableVertexAttribArray(0);
 
@@ -97,7 +100,8 @@ void Render::render_loop()
 		glUniform1f(angleLoc, time);
 
 		glBindTexture(GL_TEXTURE_2D, texture);
-		glDrawElements(GL_TRIANGLES, 1, GL_UNSIGNED_INT, 0);
+
+		glDrawElements(GL_TRIANGLES, _obj->indices.size(), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(_window);
 		glfwPollEvents(); 

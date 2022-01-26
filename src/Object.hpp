@@ -17,7 +17,7 @@ class Object
 	public:
 	std::string name;
 	std::vector<float> vertices;
-	std::vector<int> indices;
+	std::vector<unsigned int> indices; // TODO indices can be negative innit ?
 	friend std::ostream& operator<<(std::ostream& os, Object& obj);
 };
 
