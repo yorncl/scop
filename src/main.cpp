@@ -1,7 +1,7 @@
 #include <iostream>
-#include <GLFW/glfw3.h>
 #include "Object.hpp"
 #include "Parser.hpp"
+#include "Render.hpp"
 
 #define WINDOW_INIT_WIDTH 500
 #define WINDOW_INIT_HEIGHT 500
@@ -47,7 +47,18 @@ int main(int ac, char** av)
 
 	// Creating the window
 	GLFWwindow *window = init_window();
-
+	Render r(window, obj);
+	try
+	{
+		r.load_shaders();
+		r.compile_program();
+		r.render_loop();
+	}
+	catch(std::exception &e)
+	{
+		std::cerr << "An error has occured while rendering" << std::endl;
+		std::cerr << e.what() << std::endl;
+	}
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	delete obj;

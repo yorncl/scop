@@ -2,3 +2,4 @@ scop
 lib/
 glfw/
 *.o
+*.zip

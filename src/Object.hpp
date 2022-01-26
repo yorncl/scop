@@ -1,7 +1,6 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
-#include <GLFW/glfw3.h>
 #include <exception>
 #include <iostream>
 #include <vector>
