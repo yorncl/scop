@@ -1,9 +1,13 @@
 #include "Render.hpp"
 #include <stb_image.h>
+#include <exception>
 
 Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 {
 
+	glfwMakeContextCurrent(window);
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+		throw std::runtime_error("Cannot instantiate GLAD");
 }
 
 void Render::load_shaders()
@@ -12,7 +16,6 @@ void Render::load_shaders()
 	_vs = Shader(GL_FRAGMENT_SHADER);
 	_vs.from_file("src/shaders/vertex.glsl");
 	_fs.from_file("src/shaders/fragment.glsl");
-
 }
 
 void Render::compile_program()

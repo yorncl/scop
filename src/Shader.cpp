@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iterator>
 #include <exception>
+#include <iostream>
 
 struct ShaderCompilationError : std::exception
 {

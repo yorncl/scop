@@ -47,9 +47,9 @@ int main(int ac, char** av)
 
 	// Creating the window
 	GLFWwindow *window = init_window();
-	Render r(window, obj);
 	try
 	{
+		Render r(window, obj);
 		r.load_shaders();
 		r.compile_program();
 		r.render_loop();
