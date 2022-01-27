@@ -105,7 +105,6 @@ Object* Parser::read_obj(char* filename)
 					// TODO better triangulation algorithm
 					if (tokens.size() > 4)
 					{
-						std::cout << "We are here" << std::endl;
 						obj->indices.push_back(std::stoi(tokens[1]) - 1);
 						obj->indices.push_back(std::stoi(tokens[2]) - 1);
 						obj->indices.push_back(std::stoi(tokens[3]) - 1);

@@ -11,6 +11,7 @@ class Shader
 	std::string _source;
 	GLuint _type;
 	unsigned int _id;
+	std::string _filename;
 	
 
 	//TODO Coplien form ?

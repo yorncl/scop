@@ -37,6 +37,7 @@ Shader& Shader::operator=(const Shader& s)
 void Shader::from_file(const std::string& filename)
 {
 
+	_filename = filename;
 	std::ifstream is;
 	is.open(filename);
 	if(!is.is_open())
@@ -58,6 +59,9 @@ void Shader::compile()
 	infoLog[511] = 0; // TODO very hacky
 	std::cerr << infoLog << std::endl;
 	if (res == GL_FALSE)
+	{
+		std::cerr << "GLSL compilation error in file : " << _filename << std::endl;
 		throw ShaderCompilationError();
+	}
 	std::cout << "Shader compiled !" << std::endl;
 }

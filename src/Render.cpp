@@ -1,6 +1,7 @@
 #include "Render.hpp"
 #include <stb_image.h>
 #include <exception>
+#include <cstdlib>
 
 Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 {
@@ -56,20 +57,27 @@ void Render::compile_program()
 void Render::render_loop()
 {
 
+	unsigned int colors;
 	glGenVertexArrays(1, &_VAO);
 	glGenBuffers(1, &_VBO);
+	glGenBuffers(1, &colors);
 
 	// binding the vertex array object and its buffer
 	glBindVertexArray(_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 
+	// Vertex positions
+	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 	glBufferData(GL_ARRAY_BUFFER, _obj->vertices.size() * sizeof(float), _obj->vertices.data() , GL_STATIC_DRAW);
-	for(auto it = _obj->vertices.begin(); it != _obj->vertices.end(); it += 3)
-	{
-		std::cout << "v " << it[0] << " " << it[1] << " " << it[2] << std::endl;
-	}
-	// vertex attrib pointer
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	// Colors 
+	glBindBuffer(GL_ARRAY_BUFFER, colors);
+	std::vector<float> colors_buff;
+	for (size_t i = 0; i < _obj->vertices.size() / 3; i++)
+		colors_buff.push_back(rand() % 80); // TODO seed on a static objet so I get the same result every time
+	glBufferData(GL_ARRAY_BUFFER, colors_buff.size() * sizeof(float), colors_buff.data() , GL_STATIC_DRAW);	
+	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+
 
 	// texture stuff
 	int width, height, nrChannels;
@@ -89,10 +97,7 @@ void Render::render_loop()
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->indices.size() * sizeof(GLuint), _obj->indices.data(), GL_STATIC_DRAW);
 	}
         glEnableVertexAttribArray(0);
-	for(auto it = _obj->indices.begin(); it != _obj->indices.end(); it += 3)
-	{
-		std::cout << "f " << it[0] << " " << it[1] << " " << it[2] << std::endl;
-	}
+        glEnableVertexAttribArray(1);
 
 	while(!glfwWindowShouldClose(_window))
 	{

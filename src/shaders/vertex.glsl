@@ -1,8 +1,10 @@
 #version 330 core
 
 layout(location = 0) in vec3 position;
+layout(location = 1) in float color;
 
 out vec2 TexCoord;
+out float v_color;
 
 uniform float angle;
 
@@ -30,7 +32,6 @@ void main() {
  	0.0, 0.0, 0.0, 1.0
  	);
 
-
  float n = 0.1;
  float f = -100;
 
@@ -48,8 +49,8 @@ void main() {
  	0.0, 2 * n / ( t- b), 0.0, 0.0, 
  	(r + l) / (r -l ), (t + b)/ (t-b), -(f +n)/(f -n), -1, 
  	0.0, 0.0, - 2 * f * n / (f - n ), 0.0
- 	);
-
- gl_Position =  projection * view * rotation * model * vec4(position, 1);
- TexCoord = position.xy;
+	);
+ gl_Position = projection * view * rotation * model * vec4(position, 1);
+ TexCoord = position.yz;
+ v_color = color;
 }
