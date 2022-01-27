@@ -73,11 +73,12 @@ void Render::render_loop()
 	// Colors 
 	glBindBuffer(GL_ARRAY_BUFFER, colors);
 	std::vector<float> colors_buff;
-	for (size_t i = 0; i < _obj->vertices.size() / 3; i++)
-		colors_buff.push_back(rand() % 256); // TODO seed on a static objet so I get the same result every time
+	for (size_t i = 0; i < _obj->vertices.size(); i++)
+		colors_buff.push_back(static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // TODO seed on a static objet so I get the same result every time
 
 	glBufferData(GL_ARRAY_BUFFER, colors_buff.size() * sizeof(float), colors_buff.data() , GL_STATIC_DRAW);	
-	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
 
 	// Enable vertex attrib
         glEnableVertexAttribArray(0);

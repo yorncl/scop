@@ -1,14 +1,15 @@
 #version 330 core
 
 layout(location = 0) in vec3 position;
-layout(location = 1) in float color;
+layout(location = 1) in vec3 colorValue;
 
 out vec2 TexCoord;
-out float v_color;
+out vec3 v_color;
 
 uniform float angle;
 
 void main() {
+ const float PI_2 = 1.57079632679489661923;
 
  mat4 model = mat4 (
  	1.0, 0.0, 0.0, 0.0, 
@@ -21,7 +22,7 @@ void main() {
  	1.0, 0.0, 0.0, 0.0, 
  	0.0, 1.0, 0.0, 0.0, 
  	0.0, 0.0, 1.0, 0.0, 
- 	0.0, -2.0, -5.0, 1.0
+ 	0.3* cos(7*(position.y  + angle) ), -2.0, -5.0, 1.0
  	);
 
 
@@ -35,7 +36,6 @@ void main() {
  float n = 0.1;
  float f = -100;
 
- const float PI_2 = 1.57079632679489661923;
  float scale = tan(90 * PI_2 /180) * n;
 
  float r = 1 * scale;
@@ -52,5 +52,5 @@ void main() {
 	);
  gl_Position = projection * view * rotation * model * vec4(position, 1);
  TexCoord = position.yz;
- v_color = color;
+ v_color = colorValue;
 }
