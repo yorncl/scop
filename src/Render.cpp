@@ -74,10 +74,14 @@ void Render::render_loop()
 	glBindBuffer(GL_ARRAY_BUFFER, colors);
 	std::vector<float> colors_buff;
 	for (size_t i = 0; i < _obj->vertices.size() / 3; i++)
-		colors_buff.push_back(rand() % 80); // TODO seed on a static objet so I get the same result every time
+		colors_buff.push_back(rand() % 256); // TODO seed on a static objet so I get the same result every time
+
 	glBufferData(GL_ARRAY_BUFFER, colors_buff.size() * sizeof(float), colors_buff.data() , GL_STATIC_DRAW);	
 	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
 
+	// Enable vertex attrib
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
 
 	// texture stuff
 	int width, height, nrChannels;
@@ -96,9 +100,6 @@ void Render::render_loop()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->indices.size() * sizeof(GLuint), _obj->indices.data(), GL_STATIC_DRAW);
 	}
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
 	while(!glfwWindowShouldClose(_window))
 	{
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

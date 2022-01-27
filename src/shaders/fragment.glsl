@@ -10,5 +10,5 @@ uniform float red_value;
 
 void main() {
  //color = texture(ourTexture, TexCoord);
- color = vec4(v_color, v_color, v_color, 1.0);
+ color = vec4(v_color, 0.0, 0.0, 1.0);
 }
