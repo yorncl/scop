@@ -64,6 +64,10 @@ void Render::render_loop()
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 
 	glBufferData(GL_ARRAY_BUFFER, _obj->vertices.size() * sizeof(float), _obj->vertices.data() , GL_STATIC_DRAW);
+	for(auto it = _obj->vertices.begin(); it != _obj->vertices.end(); it += 3)
+	{
+		std::cout << "v " << it[0] << " " << it[1] << " " << it[2] << std::endl;
+	}
 	// vertex attrib pointer
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
@@ -85,6 +89,10 @@ void Render::render_loop()
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->indices.size() * sizeof(GLuint), _obj->indices.data(), GL_STATIC_DRAW);
 	}
         glEnableVertexAttribArray(0);
+	for(auto it = _obj->indices.begin(); it != _obj->indices.end(); it += 3)
+	{
+		std::cout << "f " << it[0] << " " << it[1] << " " << it[2] << std::endl;
+	}
 
 	while(!glfwWindowShouldClose(_window))
 	{

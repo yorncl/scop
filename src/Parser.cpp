@@ -102,15 +102,21 @@ Object* Parser::read_obj(char* filename)
 					throw ParsingError("Needs at least 3 vertices index", filename, linenumber);
 				try
 				{
-					obj->indices.push_back(std::stoi(tokens[1]));
-					obj->indices.push_back(std::stoi(tokens[2]));
-					obj->indices.push_back(std::stoi(tokens[3]));
 					// TODO better triangulation algorithm
 					if (tokens.size() > 4)
 					{
-						obj->indices.push_back(std::stoi(tokens[2]));
-						obj->indices.push_back(std::stoi(tokens[3]));
-						obj->indices.push_back(std::stoi(tokens[4]));
+						std::cout << "We are here" << std::endl;
+						obj->indices.push_back(std::stoi(tokens[1]) - 1);
+						obj->indices.push_back(std::stoi(tokens[2]) - 1);
+						obj->indices.push_back(std::stoi(tokens[3]) - 1);
+						obj->indices.push_back(std::stoi(tokens[1]) - 1);
+						obj->indices.push_back(std::stoi(tokens[3]) - 1);
+						obj->indices.push_back(std::stoi(tokens[4]) - 1);
+					}
+					else{
+						obj->indices.push_back(std::stoi(tokens[1]) - 1);
+						obj->indices.push_back(std::stoi(tokens[2]) - 1);
+						obj->indices.push_back(std::stoi(tokens[3]) - 1);
 					}
 				}
 				catch(std::invalid_argument &e)
