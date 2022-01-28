@@ -3,3 +3,4 @@ lib/
 glfw/
 *.o
 *.zip
+*.swp
