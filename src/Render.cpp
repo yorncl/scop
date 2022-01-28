@@ -2,6 +2,7 @@
 #include <stb_image.h>
 #include <exception>
 #include <cstdlib>
+#include "Mat4.hpp"
 
 Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 {
@@ -79,6 +80,14 @@ void Render::render_loop()
 	glBufferData(GL_ARRAY_BUFFER, colors_buff.size() * sizeof(float), colors_buff.data() , GL_STATIC_DRAW);	
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
+
+	Mat4 m = Mat4::new_identity();
+	unsigned int modelm = glGetUniformLocation(_shader_program, "modelm");
+	glUniformMatrix4fv(modelm, 1, GL_FALSE, m.data());
+	std::cout << m << std::endl;
+	m = Mat4::new_scale(2.0f, 2.0f, 2.0f);
+	std::cout << m << std::endl;
+	std::cout << (m * 3) << std::endl;
 
 	// Enable vertex attrib
         glEnableVertexAttribArray(0);

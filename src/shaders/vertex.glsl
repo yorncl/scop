@@ -7,16 +7,11 @@ out vec2 TexCoord;
 out vec3 v_color;
 
 uniform float angle;
+uniform mat4 modelm;
 
 void main() {
  const float PI_2 = 1.57079632679489661923;
 
- mat4 model = mat4 (
- 	1.0, 0.0, 0.0, 0.0, 
- 	0.0, 1.0, 0.0, 0.0, 
- 	0.0, 0.0, 1.0, 0.0, 
- 	0.0, 0.0, 0.0, 1.0
- 	);
 
  mat4 view = mat4 (
  	1.0, 0.0, 0.0, 0.0, 
@@ -50,7 +45,7 @@ void main() {
  	(r + l) / (r -l ), (t + b)/ (t-b), -(f +n)/(f -n), -1, 
  	0.0, 0.0, - 2 * f * n / (f - n ), 0.0
 	);
- gl_Position = projection * view * rotation * model * vec4(position, 1);
+ gl_Position = projection * view * rotation * modelm * vec4(position, 1);
  TexCoord = position.yz;
  v_color = colorValue;
 }
