@@ -58,29 +58,40 @@ void Render::compile_program()
 void Render::render_loop()
 {
 
-	unsigned int colors;
 	glGenVertexArrays(1, &_VAO);
-	glGenBuffers(1, &_VBO);
-	glGenBuffers(1, &colors);
-
-	// binding the vertex array object and its buffer
 	glBindVertexArray(_VAO);
 
 	// Vertex positions
+	glGenBuffers(1, &_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferData(GL_ARRAY_BUFFER, _obj->vertices.size() * sizeof(float), _obj->vertices.data() , GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glBufferData(GL_ARRAY_BUFFER, _obj->vertices.size() * sizeof(Vec3<float>), _obj->vertices.data() , GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3<float>), 0);
+
 
 	// Colors 
+	unsigned int colors;
+	glGenBuffers(1, &colors);
 	glBindBuffer(GL_ARRAY_BUFFER, colors);
 	std::vector<float> colors_buff;
-	for (size_t i = 0; i < _obj->vertices.size(); i++)
+	for (size_t i = 0; i < _obj->vertices.size() * 3; i++)
 		colors_buff.push_back(static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // TODO seed on a static objet so I get the same result every time
-
 	glBufferData(GL_ARRAY_BUFFER, colors_buff.size() * sizeof(float), colors_buff.data() , GL_STATIC_DRAW);	
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
+	// Normals
+	for (auto it = _obj->vertices.begin(); it < _obj->vertices.end(); it++)
+	{
+		Vec3<float> normal = *it;
+		normal.normalize();
+		_obj->normals.push_back(normal);
+	}
+	unsigned int normals;
+	glGenBuffers(1, &normals);
+	glBindBuffer(GL_ARRAY_BUFFER, normals);
+	glBufferData(GL_ARRAY_BUFFER, _obj->normals.size() * sizeof(Vec3<float>), _obj->normals.data() , GL_STATIC_DRAW); // TODO change datatype to make it more readable
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3<float>), 0);
 
+	//Matrices and transhform uniforms
 	Mat4 m = Mat4::new_identity();
 	unsigned int modelm = glGetUniformLocation(_shader_program, "modelm");
 	glUniformMatrix4fv(modelm, 1, GL_FALSE, m.data());
@@ -92,6 +103,7 @@ void Render::render_loop()
 	// Enable vertex attrib
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
 	// texture stuff
 	int width, height, nrChannels;

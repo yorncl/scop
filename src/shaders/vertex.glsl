@@ -2,9 +2,13 @@
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 colorValue;
+layout(location = 2) in vec3 normal;
 
 out vec2 TexCoord;
-out vec3 v_color;
+//out vec3 v_color;
+out vec3 v_normal;
+out vec3 FragPos;
+out vec3 lightDir;
 
 uniform float angle;
 uniform mat4 modelm;
@@ -12,12 +16,18 @@ uniform mat4 modelm;
 void main() {
  const float PI_2 = 1.57079632679489661923;
 
-
  mat4 view = mat4 (
  	1.0, 0.0, 0.0, 0.0, 
  	0.0, 1.0, 0.0, 0.0, 
  	0.0, 0.0, 1.0, 0.0, 
- 	0.3* cos(7*(position.y  + angle) ), -2.0, -5.0, 1.0
+ 	0.0, -2.0, -5.0, 1.0
+ 	);
+
+ mat4 view2 = mat4 (
+ 	1.0, 0.0, 0.0, 0.0, 
+ 	0.0, 0.7 + abs(cos(angle * 2)), 0.0, 0.0, 
+ 	0.0, 0.0, 1.0, 0.0, 
+ 	0.2* cos(7*(position.y  + angle) ), -2.0, -5.0, 1.0
  	);
 
 
@@ -47,5 +57,8 @@ void main() {
 	);
  gl_Position = projection * view * rotation * modelm * vec4(position, 1);
  TexCoord = position.yz;
- v_color = colorValue;
+ //v_color = colorValue;
+ v_normal = normal;
+ FragPos = vec3(modelm * vec4(position, 1.00));
+ lightDir = normalize(vec3(-3, 2, -1) - position);
 }

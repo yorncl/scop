@@ -46,17 +46,16 @@ void inline split(std::string &s, std::vector<std::string> &tokens)
 Object* Parser::read_obj(char* filename)
 {
 	std::ifstream fs;
-	fs.open(filename);
-	if (!fs.is_open())
-		throw std::runtime_error("Could not open file : " + std::string(filename));
-
-	Object* obj = new Object();
-
+	Object* obj;
 	std::string line;
 	std::vector<std::string> tokens;
 	size_t linenumber = 0;
 	try
 	{
+		fs.open(filename);
+		if (!fs.is_open())
+			throw std::runtime_error("Could not open file : " + std::string(filename));
+		obj = new Object();
 		while (std::getline(fs, line))
 		{
 			linenumber++;
@@ -82,9 +81,11 @@ Object* Parser::read_obj(char* filename)
 					throw ParsingError("Vertex malformed", filename, linenumber);
 				try 
 				{
-					obj->vertices.push_back(std::stof(tokens[1]));
-					obj->vertices.push_back(std::stof(tokens[2]));
-					obj->vertices.push_back(std::stof(tokens[3]));
+					vec3f v;
+					v.x = std::stof(tokens[1]);
+					v.y = std::stof(tokens[2]);
+					v.z = std::stof(tokens[3]);
+					obj->vertices.push_back(v);
 				}
 				catch(std::invalid_argument &e)
 				{
