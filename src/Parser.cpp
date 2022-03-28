@@ -1,4 +1,5 @@
 #include "Parser.hpp"
+#include "Vec3.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -81,7 +82,7 @@ Object* Parser::read_obj(char* filename)
 					throw ParsingError("Vertex malformed", filename, linenumber);
 				try 
 				{
-					vec3f v;
+					Vec3<float> v;
 					v.x = std::stof(tokens[1]);
 					v.y = std::stof(tokens[2]);
 					v.z = std::stof(tokens[3]);
