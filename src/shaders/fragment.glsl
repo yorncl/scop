@@ -10,5 +10,6 @@ uniform float textCoeff;
 
 void main() {
 
- color = texture(ourTexture, TexCoord) * textCoeff +  (1.0 - textCoeff) * vec4(abs(v_normal), 1.0);
+ color = texture(ourTexture, TexCoord) * textCoeff + 
+ 	(1.0 - textCoeff) *vec4((vec3(1.0, 1.0, 1.0) / 16) * (gl_PrimitiveID % 4), 1.0);
 }
