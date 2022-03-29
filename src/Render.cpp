@@ -132,7 +132,10 @@ void Render::init_uniforms()
 	unsigned int modelm = glGetUniformLocation(_shader_program, "modelm");
 	Mat4 m = Mat4::new_identity();
 	glUniformMatrix4fv(modelm, 1, GL_FALSE, m.data());
-	m = Mat4::new_scale(0.0f, 0.0f, 0.0f);
+
+	unsigned int viewm = glGetUniformLocation(_shader_program, "viewm");
+	m = Mat4::new_translate(0.0f, 0.0f, -5.0f);
+	glUniformMatrix4fv(viewm, 1, GL_FALSE, m.data());
 
 	// Color-texture blending parameter
 	_textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
@@ -143,7 +146,7 @@ void Render::load_texture()
 {
 	// Loading the cobblestone texture
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load("resources/cobble.jpg", &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load("resources/Steve.png", &width, &height, &nrChannels, 0);
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);

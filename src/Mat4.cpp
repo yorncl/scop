@@ -49,9 +49,9 @@ Mat4 Mat4::new_scale(float x, float y, float z)
 Mat4 Mat4::new_translate(float x, float y, float z)
 {
 	Mat4 m = new_identity();
-	m[0][3] = x; 
-	m[1][3] = y; 
-	m[2][3] = z; 
+	m[3][0] = x; 
+	m[3][1] = y; 
+	m[3][2] = z; 
 	return m;
 }
 
@@ -81,8 +81,7 @@ float* Mat4::operator[](size_t i)
 
 const float* Mat4::operator[](size_t i) const
 {
-	return &_data[i * 4]; // probably not a best practice, because _data is private, but returning a pointer to it makes us able to modify the data elsewhere than in the class
-	// but I don't care right now
+	return &_data[i * 4];
 }
 
 Mat4 operator*(const Mat4& m, float f)
