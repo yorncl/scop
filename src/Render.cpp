@@ -5,12 +5,6 @@
 #include <ctime>
 #include "Mat4.hpp"
 
-bool Render::_transition = false;
-bool Render::_direction = false;
-unsigned int Render::_textCoeff;
-std::clock_t Render::_startime;
-
-
 Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 {
 	glfwSetKeyCallback(window, this->key_callback);
@@ -22,7 +16,6 @@ Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 	load_buffers();
 	init_uniforms();
 	load_texture();
-	update_uniforms();
 }
 
 void Render::load_shaders()
@@ -139,7 +132,7 @@ void Render::init_uniforms()
 	unsigned int modelm = glGetUniformLocation(_shader_program, "modelm");
 	Mat4 m = Mat4::new_identity();
 	glUniformMatrix4fv(modelm, 1, GL_FALSE, m.data());
-	m = Mat4::new_scale(2.0f, 2.0f, 2.0f);
+	m = Mat4::new_scale(0.0f, 0.0f, 0.0f);
 
 	// Color-texture blending parameter
 	_textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
@@ -177,9 +170,8 @@ void Render::update_uniforms()
 
 	glUseProgram(_shader_program);
 	float time = glfwGetTime();
-	unsigned int angleLoc = glGetUniformLocation(_shader_program, "angle");
-	glUniform1f(angleLoc, time);
-
+	_angle = glGetUniformLocation(_shader_program, "angle");
+	glUniform1f(_angle, time);
 }
 
 void Render::render_loop()

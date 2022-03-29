@@ -10,28 +10,18 @@ uniform mat4 modelm;
 out vec2 TexCoord;
 out vec3 v_normal;
 out vec3 FragPos;
-out vec3 viewPos;
 
 
 void main() {
  const float PI_2 = 1.57079632679489661923;
 
- viewPos = vec3(0, -2, -5);
 
  mat4 view = mat4 (
  	1.0, 0.0, 0.0, 0.0, 
  	0.0, 1.0, 0.0, 0.0, 
  	0.0, 0.0, 1.0, 0.0, 
- 	0.0, -2.0, -5.0, 1.0
+ 	0.0, 0.0, -5.0, 1.0
  	);
-
- mat4 view2 = mat4 (
- 	1.0, 0.0, 0.0, 0.0, 
- 	0.0, 1.0, 0.0, 0.0, 
- 	0.0, 0.0, 1.0, 0.0, 
- 	0.2* cos(7*(position.y  + angle) ), -2.0, -5.0, 1.0
- 	);
-
 
  mat4 rotation = mat4 (
  	cos(angle), 0.0, sin(angle), 0.0,

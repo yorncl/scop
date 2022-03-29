@@ -33,7 +33,15 @@ class Render
 		static bool _transition;
 		static bool _direction;
 		static unsigned int _textCoeff;
+		static unsigned int _angle;
 		static std::clock_t _startime;
 };
+
+bool Render::_transition = false;
+bool Render::_direction = false;
+unsigned int Render::_textCoeff;
+unsigned int Render::_angle;
+std::clock_t Render::_startime;
+
 
 #endif
