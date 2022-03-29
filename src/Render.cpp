@@ -2,7 +2,12 @@
 #include <stb_image.h>
 #include <exception>
 #include <cstdlib>
+#include <ctime>
 #include "Mat4.hpp"
+
+bool transition = false;
+bool direction = true;
+std::clock_t startime;
 
 Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 {
@@ -54,6 +59,21 @@ void Render::compile_program()
 	glDeleteShader(_fs._id);
 }
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	(void) key;
+	(void) scancode;
+	(void) action;
+	(void) mods;
+	(void) window;
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	    exit(0);
+	if (key == GLFW_KEY_T && action == GLFW_RELEASE && !transition)
+	{
+		startime = std::clock();
+		transition = true;
+	}
+}
 
 void Render::render_loop()
 {
@@ -95,10 +115,9 @@ void Render::render_loop()
 	Mat4 m = Mat4::new_identity();
 	unsigned int modelm = glGetUniformLocation(_shader_program, "modelm");
 	glUniformMatrix4fv(modelm, 1, GL_FALSE, m.data());
-	std::cout << m << std::endl;
 	m = Mat4::new_scale(2.0f, 2.0f, 2.0f);
-	std::cout << m << std::endl;
-	std::cout << (m * 3) << std::endl;
+	unsigned int textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
+	glUniform1f(textCoeff, 1.0f);
 
 	// Enable vertex attrib
         glEnableVertexAttribArray(0);
@@ -122,12 +141,29 @@ void Render::render_loop()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->indices.size() * sizeof(GLuint), _obj->indices.data(), GL_STATIC_DRAW);
 	}
+
+	glfwSetKeyCallback(_window, key_callback);
 	while(!glfwWindowShouldClose(_window))
 	{
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glfwPollEvents();
+
+		if (transition)
+		{
+			float elapsed = float(std::clock() - startime);
+			if (elapsed >= 100000)
+			{
+				direction = !direction;
+				transition = false;
+			}
+			else
+			{
+				glUniform1f(textCoeff, direction ? 1.0f - elapsed/100000 : elapsed/100000);
+			}
+		}
 	
 		glUseProgram(_shader_program);
 

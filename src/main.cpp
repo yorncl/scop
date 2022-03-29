@@ -35,6 +35,7 @@ int main(int ac, char** av)
 	try 
 	{
 		obj = Parser::read_obj(av[1]);
+		obj->calculateCenter();
 	}
 	catch (std::exception &e)
 	{

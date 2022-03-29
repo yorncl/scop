@@ -39,4 +39,9 @@ fclean: clean
 
 re: fclean all
 
+42: all
+	./$(NAME) ./resources/42.obj
+teapot: all
+	./$(NAME) ./resources/teapot.obj
+
 .PHONY: all clean fclean re

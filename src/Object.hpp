@@ -21,6 +21,7 @@ class Object
 	std::vector<Vec3<float>> vertices;
 	std::vector<unsigned int> indices; // TODO indices can be negative innit ?
 	std::vector<Vec3<float>> normals;
+	void calculateCenter();
 	friend std::ostream& operator<<(std::ostream& os, Object& obj);
 };
 

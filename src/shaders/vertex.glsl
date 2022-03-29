@@ -4,14 +4,14 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 colorValue;
 layout(location = 2) in vec3 normal;
 
+uniform float angle;
+uniform mat4 modelm;
+
 out vec2 TexCoord;
 out vec3 v_normal;
 out vec3 FragPos;
 out vec3 viewPos;
-out vec3 lightDir;
 
-uniform float angle;
-uniform mat4 modelm;
 
 void main() {
  const float PI_2 = 1.57079632679489661923;
@@ -61,5 +61,4 @@ void main() {
  TexCoord = position.yz;
  v_normal = vec3(rotation * modelm * vec4(normal, 1));
  FragPos = vec3(rotation * modelm * vec4(position, 1));
- lightDir = normalize(vec3(-4, 4, 0) - FragPos);
 }
