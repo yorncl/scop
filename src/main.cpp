@@ -51,8 +51,6 @@ int main(int ac, char** av)
 	try
 	{
 		Render r(window, obj);
-		r.load_shaders();
-		r.compile_program();
 		r.render_loop();
 	}
 	catch(std::exception &e)

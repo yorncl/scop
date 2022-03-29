@@ -3,6 +3,7 @@
 
 #include "Shader.hpp"
 #include "Object.hpp"
+#include <ctime>
 
 class Render
 {
@@ -21,6 +22,18 @@ class Render
 		void load_shaders();
 		void compile_program();
 		void render_loop();
+
+		static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		void load_buffers();
+		void init_uniforms();
+		void load_texture();
+		void update_uniforms();
+
+		// Not really pretty but hey, it works
+		static bool _transition;
+		static bool _direction;
+		static unsigned int _textCoeff;
+		static std::clock_t _startime;
 };
 
 #endif

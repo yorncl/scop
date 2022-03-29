@@ -5,16 +5,24 @@
 #include <ctime>
 #include "Mat4.hpp"
 
-bool transition = false;
-bool direction = true;
-std::clock_t startime;
+bool Render::_transition = false;
+bool Render::_direction = false;
+unsigned int Render::_textCoeff;
+std::clock_t Render::_startime;
+
 
 Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 {
-
+	glfwSetKeyCallback(window, this->key_callback);
 	glfwMakeContextCurrent(window);
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		throw std::runtime_error("Cannot instantiate GLAD");
+	load_shaders();
+	compile_program();
+	load_buffers();
+	init_uniforms();
+	load_texture();
+	update_uniforms();
 }
 
 void Render::load_shaders()
@@ -48,7 +56,7 @@ void Render::compile_program()
 		char infoLog[512]; // TODO change this 
 		glGetProgramInfoLog(_shader_program, 512, NULL, infoLog);
 		infoLog[511] = 0; // TODO very hacky
-		fprintf(stderr, "%s", infoLog);
+		std::cerr << infoLog << std::endl;
 	}
 
 	// TODO error management
@@ -59,7 +67,7 @@ void Render::compile_program()
 	glDeleteShader(_fs._id);
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Render::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	(void) key;
 	(void) scancode;
@@ -68,14 +76,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	(void) window;
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	    exit(0);
-	if (key == GLFW_KEY_T && action == GLFW_RELEASE && !transition)
+	if (key == GLFW_KEY_T && action == GLFW_RELEASE && !_transition)
 	{
-		startime = std::clock();
-		transition = true;
+		_startime = std::clock();
+		_transition = true;
 	}
 }
 
-void Render::render_loop()
+void Render::load_buffers()
 {
 
 	glGenVertexArrays(1, &_VAO);
@@ -111,28 +119,10 @@ void Render::render_loop()
 	glBufferData(GL_ARRAY_BUFFER, _obj->normals.size() * sizeof(Vec3<float>), _obj->normals.data() , GL_STATIC_DRAW); // TODO change datatype to make it more readable
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3<float>), 0);
 
-	//Matrices and transhform uniforms
-	Mat4 m = Mat4::new_identity();
-	unsigned int modelm = glGetUniformLocation(_shader_program, "modelm");
-	glUniformMatrix4fv(modelm, 1, GL_FALSE, m.data());
-	m = Mat4::new_scale(2.0f, 2.0f, 2.0f);
-	unsigned int textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
-	glUniform1f(textCoeff, 1.0f);
-
 	// Enable vertex attrib
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
-
-	// texture stuff
-	int width, height, nrChannels;
-	unsigned char *data = stbi_load("resources/cobble.jpg", &width, &height, &nrChannels, 0);
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	stbi_image_free(data);
 
 	// faces
 	if(_obj->indices.size() > 0)
@@ -141,8 +131,59 @@ void Render::render_loop()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->indices.size() * sizeof(GLuint), _obj->indices.data(), GL_STATIC_DRAW);
 	}
+}
 
-	glfwSetKeyCallback(_window, key_callback);
+void Render::init_uniforms()
+{
+	// Matrices
+	unsigned int modelm = glGetUniformLocation(_shader_program, "modelm");
+	Mat4 m = Mat4::new_identity();
+	glUniformMatrix4fv(modelm, 1, GL_FALSE, m.data());
+	m = Mat4::new_scale(2.0f, 2.0f, 2.0f);
+
+	// Color-texture blending parameter
+	_textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
+	glUniform1f(_textCoeff, 0.0f);
+}
+
+void Render::load_texture()
+{
+	// Loading the cobblestone texture
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load("resources/cobble.jpg", &width, &height, &nrChannels, 0);
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	stbi_image_free(data);
+}
+
+void Render::update_uniforms()
+{
+	if (_transition)
+	{
+		float elapsed = float(std::clock() - _startime);
+		if (elapsed >= 100000)
+		{
+			_direction = !_direction;
+			_transition = false;
+		}
+		else
+		{
+			glUniform1f(_textCoeff, _direction ? 1.0f - elapsed/100000 : elapsed/100000);
+		}
+	}
+
+	glUseProgram(_shader_program);
+	float time = glfwGetTime();
+	unsigned int angleLoc = glGetUniformLocation(_shader_program, "angle");
+	glUniform1f(angleLoc, time);
+
+}
+
+void Render::render_loop()
+{
 	while(!glfwWindowShouldClose(_window))
 	{
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -151,30 +192,9 @@ void Render::render_loop()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
 
-		if (transition)
-		{
-			float elapsed = float(std::clock() - startime);
-			if (elapsed >= 100000)
-			{
-				direction = !direction;
-				transition = false;
-			}
-			else
-			{
-				glUniform1f(textCoeff, direction ? 1.0f - elapsed/100000 : elapsed/100000);
-			}
-		}
-	
-		glUseProgram(_shader_program);
-
-		float time = glfwGetTime();
-		unsigned int angleLoc = glGetUniformLocation(_shader_program, "angle");
-		glUniform1f(angleLoc, time);
-
-		glBindTexture(GL_TEXTURE_2D, texture);
+		update_uniforms();
 
 		glDrawElements(GL_TRIANGLES, _obj->indices.size(), GL_UNSIGNED_INT, 0);
-
 		glfwSwapBuffers(_window);
 		glfwPollEvents(); 
 	}
