@@ -37,11 +37,4 @@ class Render
 		static std::clock_t _startime;
 };
 
-bool Render::_transition = false;
-bool Render::_direction = false;
-unsigned int Render::_textCoeff;
-unsigned int Render::_angle;
-std::clock_t Render::_startime;
-
-
 #endif

@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Werror  -g -std=c++11 -fsanitize=address
 CC = g++
 SRC = $(wildcard src/*.cpp)
 LDFLAGS= -lm -L ./lib/libglfw3 -lglfw3 -ldl
-HEADERS = $(wildcard src/*.hpp)
+HEADERS = $(wildcard src/*.hpp src/*.h)
 OBJ = $(SRC:%.cpp=%.o)
 NAME=scop
 INC= -I ./include
@@ -28,7 +28,8 @@ endif
 	$(CC) $(CFLAGS) -c $^ -o $@  $(INC)
 
 all : $(NAME)
-$(NAME) :  $(OBJ) src/glad.o  $(HEADERS)
+
+$(NAME) :  $(OBJ) src/glad.o $(HEADERS)
 	$(CC) $(CFLAGS)  $(OBJ) src/glad.o $(LIBFT) -o $(NAME) $(INC) $(LDFLAGS)
 
 clean:

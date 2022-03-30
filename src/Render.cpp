@@ -5,6 +5,12 @@
 #include <ctime>
 #include "Mat4.hpp"
 
+bool Render::_transition = false;
+bool Render::_direction = false;
+unsigned int Render::_textCoeff;
+unsigned int Render::_angle;
+std::clock_t Render::_startime;
+
 Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 {
 	glfwSetKeyCallback(window, this->key_callback);
@@ -146,7 +152,7 @@ void Render::load_texture()
 {
 	// Loading the cobblestone texture
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load("resources/Steve.png", &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load("resources/cobble.jpg", &width, &height, &nrChannels, 0);
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
