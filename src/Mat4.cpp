@@ -1,5 +1,6 @@
 #include "Mat4.hpp"
 #include <string.h>
+#include <cmath>
 
 Mat4::Mat4()
 {
@@ -31,8 +32,10 @@ float* Mat4::data()
 Mat4 Mat4::new_identity()
 {
 	Mat4 m;
-	for (int i = 0; i < 4; i++)
-		m[i][i] = 1.0f;
+	m[0][0] = 1.0f; 
+	m[1][1] = 1.0f; 
+	m[2][2] = 1.0f; 
+	m[3][3] = 1.0f; 
 	return m;
 }
 
@@ -63,8 +66,36 @@ Mat4 Mat4::new_rotation()
 
 Mat4 Mat4::new_projection()
 {
-	//TODO
-	return new_identity();
+	 float n = 0.1;
+	 float f = -100;
+
+	 float scale = tan(90 * M_PI_2 /180) * n;
+
+	 float r = 1 * scale;
+	 float l = -r;
+
+	 float t = scale;
+	 float b = -t;
+
+ 	// in column-major order, this is the protjection matrix
+ 	// 2 * n / ( r - l ), 	0.0, 	 	 	0.0, 		0.0, 
+ 	// 0.0, 		2 * n / ( t- b), 	0.0, 		0.0, 
+ 	// (r + l) / (r -l ), 	(t + b)/ (t-b), 	-(f+n)/(f-n), 	-1, 
+ 	// 0.0, 		0.0, 			-2*f*n/(f-n), 	0.0
+	
+	
+	Mat4 m;
+	m[0][0] = 2 * n/ (r - l);
+	m[1][1] = 2 * n/ (t - b);
+
+	m[2][0] = (r + l) / (r - l);
+	m[2][1] = (t + b) / (t - l);
+	m[2][2] = -(f + n) / (f - n);
+	m[2][3] = -1;
+
+	m[3][2] = - 2 * f * n / (f - n);
+
+	return m;
 }
 
 Mat4& Mat4::operator=(const Mat4& m)

@@ -68,11 +68,8 @@ void Render::compile_program()
 
 void Render::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	(void) key;
 	(void) scancode;
-	(void) action;
 	(void) mods;
-	(void) window;
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		glfwDestroyWindow(window);
@@ -138,14 +135,20 @@ void Render::load_buffers()
 
 void Render::init_uniforms()
 {
-	// Matrices
-	unsigned int modelm = glGetUniformLocation(_shader_program, "modelm");
+	unsigned int matrix;
+	// model matrix (object to world position)
+	matrix = glGetUniformLocation(_shader_program, "modelm");
 	Mat4 m = Mat4::new_identity();
-	glUniformMatrix4fv(modelm, 1, GL_FALSE, m.data());
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, m.data());
 
-	unsigned int viewm = glGetUniformLocation(_shader_program, "viewm");
+	// view matrix (world to camera position)
+	matrix = glGetUniformLocation(_shader_program, "viewm");
 	m = Mat4::new_translate(0.0f, 0.0f, -5.0f);
-	glUniformMatrix4fv(viewm, 1, GL_FALSE, m.data());
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, m.data());
+
+	matrix = glGetUniformLocation(_shader_program, "projm");
+	m = Mat4::new_projection();
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, m.data());
 
 	// Color-texture blending parameter
 	_textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
@@ -180,7 +183,6 @@ void Render::update_uniforms()
 			glUniform1f(_textCoeff, _direction ? 1.0f - elapsed/100000 : elapsed/100000);
 		}
 	}
-
 	glUseProgram(_shader_program);
 	float time = glfwGetTime();
 	_angle = glGetUniformLocation(_shader_program, "angle");
@@ -196,9 +198,7 @@ void Render::render_loop()
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
-
 		update_uniforms();
-
 		glDrawElements(GL_TRIANGLES, _obj->indices.size(), GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(_window);
 		glfwPollEvents(); 
