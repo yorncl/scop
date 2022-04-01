@@ -1,6 +1,6 @@
 
 
-CFLAGS = -Wall -Wextra -Werror  -g -std=c++11 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g -std=c++11
 CC = g++
 SRC = $(wildcard src/*.cpp)
 LDFLAGS= -lm -L ./lib/libglfw3 -lglfw3 -ldl
@@ -22,10 +22,10 @@ else
     endif
 endif
 
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c $^ -o $@  $(INC) $(LDFLAGS)
+%.o: %.cpp Makefile $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@  $(INC) $(LDFLAGS)
 %/glad.o: %/glad.c
-	$(CC) $(CFLAGS) -c $^ -o $@  $(INC)
+	$(CC) $(CFLAGS) -c $< -o $@  $(INC)
 
 all : $(NAME)
 
