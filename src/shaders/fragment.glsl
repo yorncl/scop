@@ -1,9 +1,8 @@
 #version 330 core
+
 out vec4 color;
+
 in vec2 TexCoord;
-in vec3 v_color;
-in vec3 v_normal;
-in vec3 FragPos;
 
 uniform sampler2D ourTexture;
 uniform float textCoeff;

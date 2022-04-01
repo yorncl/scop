@@ -10,13 +10,16 @@ class Render
 {
 	public:
 		GLFWwindow* _window;
+		// the actual object
 		Object* _obj;
+		// OpenGL ids
 		GLuint _VAO;
 		GLuint _VBO;
 		GLuint _EBO;
 		Shader _vs;
 		Shader _fs;
 		GLuint _shader_program;
+		// uniforms matrices
 		Mat4 _modelm;
 		Mat4 _viewm;
 		Mat4 _projm;
@@ -34,10 +37,13 @@ class Render
 		void update_uniforms();
 
 		// Not really pretty but hey, it works
+		// all static so they can be accessed in static callbacks
 		static bool _transition;
 		static bool _direction;
 		static unsigned int _textCoeff;
 		static std::clock_t _startime;
+
+		struct ShaderError;
 };
 
 #endif

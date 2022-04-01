@@ -1,14 +1,21 @@
-#include "Render.hpp"
 #include <stb_image.h>
 #include <exception>
 #include <cstdlib>
 #include <ctime>
 #include "Mat4.hpp"
+#include "Render.hpp"
 
 bool Render::_transition = false;
 bool Render::_direction = false;
 unsigned int Render::_textCoeff;
 std::clock_t Render::_startime;
+
+struct Render::ShaderError : public std::exception
+{
+	const char* what() const throw() {
+		return "A shader error has occured";
+	}
+};
 
 Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
 {
@@ -33,6 +40,19 @@ void Render::load_shaders()
 	_fs.from_file("src/shaders/fragment.glsl");
 }
 
+void check_status(int id, int status) throw()
+{
+	int success = 1;
+	glGetProgramiv(id, status, &success);
+	if (!success) {
+		char infoLog[512];
+		glGetProgramInfoLog(id, 512, NULL, infoLog);
+		infoLog[511] = 0;
+		std::cerr << infoLog << std::endl;
+		throw Render::ShaderError();
+	}
+}
+
 void Render::compile_program()
 {
 	//compile shaders
@@ -47,21 +67,12 @@ void Render::compile_program()
 	glAttachShader(_shader_program, _fs._id);
 	glLinkProgram(_shader_program);
 
-	// check the linking status
-	int success = 1;
-	glGetProgramiv(_shader_program, GL_LINK_STATUS, &success);
-	if (!success) {
-		char infoLog[512]; // TODO change this 
-		glGetProgramInfoLog(_shader_program, 512, NULL, infoLog);
-		infoLog[511] = 0; // TODO very hacky
-		std::cerr << infoLog << std::endl;
-	}
-
-	// TODO error management
+	check_status(_shader_program, GL_LINK_STATUS);
 	glValidateProgram(_shader_program);
+	check_status(_shader_program, GL_VALIDATE_STATUS);
 	glUseProgram(_shader_program);
 
-	glDeleteShader(_vs._id); // TODO might crash ?
+	glDeleteShader(_vs._id);
 	glDeleteShader(_fs._id);
 }
 
@@ -94,34 +105,8 @@ void Render::load_buffers()
 	glBufferData(GL_ARRAY_BUFFER, _obj->vertices.size() * sizeof(Vec3<float>), _obj->vertices.data() , GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3<float>), 0);
 
-
-	// Colors 
-	unsigned int colors;
-	glGenBuffers(1, &colors);
-	glBindBuffer(GL_ARRAY_BUFFER, colors);
-	std::vector<float> colors_buff;
-	for (size_t i = 0; i < _obj->vertices.size() * 3; i++)
-		colors_buff.push_back(static_cast <float> (rand()) / static_cast <float> (RAND_MAX)); // TODO seed on a static objet so I get the same result every time
-	glBufferData(GL_ARRAY_BUFFER, colors_buff.size() * sizeof(float), colors_buff.data() , GL_STATIC_DRAW);	
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
-
-	// Normals
-	for (auto it = _obj->vertices.begin(); it < _obj->vertices.end(); it++)
-	{
-		Vec3<float> normal = *it;
-		normal.normalize();
-		_obj->normals.push_back(normal);
-	}
-	unsigned int normals;
-	glGenBuffers(1, &normals);
-	glBindBuffer(GL_ARRAY_BUFFER, normals);
-	glBufferData(GL_ARRAY_BUFFER, _obj->normals.size() * sizeof(Vec3<float>), _obj->normals.data() , GL_STATIC_DRAW); // TODO change datatype to make it more readable
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3<float>), 0);
-
 	// Enable vertex attrib
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
 
 	// faces
 	if(_obj->indices.size() > 0)
