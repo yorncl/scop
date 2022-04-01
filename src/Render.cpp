@@ -174,14 +174,14 @@ void Render::update_uniforms()
 	if (_transition)
 	{
 		float elapsed = float(std::clock() - _startime);
-		if (elapsed >= 100000)
+		if (elapsed >= 10000)
 		{
 			_direction = !_direction;
 			_transition = false;
 		}
 		else
 		{
-			glUniform1f(_textCoeff, _direction ? 1.0f - elapsed/100000 : elapsed/100000);
+			glUniform1f(_textCoeff, _direction ? 1.0f - elapsed/10000 : elapsed/10000);
 		}
 	}
 
@@ -199,8 +199,8 @@ void Render::render_loop()
 {
 	while(!glfwWindowShouldClose(_window))
 	{
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
