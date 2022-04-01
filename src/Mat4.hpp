@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <iostream>
 
-// 4 by 3 matrix in column-major representation
+// 4 by 4 matrix in column-major representation
 class Mat4
 {
 	private:

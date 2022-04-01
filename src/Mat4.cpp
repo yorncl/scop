@@ -60,7 +60,6 @@ Mat4 Mat4::new_translate(float x, float y, float z)
 
 Mat4 Mat4::new_rotation(float x, float y, float z)
 {
-	// TODO
 	Mat4 m;
 
 	m[0][0] = cos(x) * cos(y); 

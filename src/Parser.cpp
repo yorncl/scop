@@ -104,20 +104,18 @@ Object* Parser::read_obj(char* filename)
 					throw ParsingError("Needs at least 3 vertices index", filename, linenumber);
 				try
 				{
-					// TODO better triangulation algorithm
+					obj->indices.push_back(std::stoi(tokens[1]) - 1);
+					obj->indices.push_back(std::stoi(tokens[2]) - 1);
+					obj->indices.push_back(std::stoi(tokens[3]) - 1);
+					// This is abysmally ugly
+					// I don't want to implement a complete, complexe .obj parser
+					// So you'll have to handle this herrendous hardcoded square triangulation
+					// the -1 is because vertices indices start at 1 in .obj, not in OpengGL if I remember correctly
 					if (tokens.size() > 4)
 					{
 						obj->indices.push_back(std::stoi(tokens[1]) - 1);
-						obj->indices.push_back(std::stoi(tokens[2]) - 1);
-						obj->indices.push_back(std::stoi(tokens[3]) - 1);
-						obj->indices.push_back(std::stoi(tokens[1]) - 1);
 						obj->indices.push_back(std::stoi(tokens[3]) - 1);
 						obj->indices.push_back(std::stoi(tokens[4]) - 1);
-					}
-					else{
-						obj->indices.push_back(std::stoi(tokens[1]) - 1);
-						obj->indices.push_back(std::stoi(tokens[2]) - 1);
-						obj->indices.push_back(std::stoi(tokens[3]) - 1);
 					}
 				}
 				catch(std::invalid_argument &e)
@@ -129,8 +127,15 @@ Object* Parser::read_obj(char* filename)
 					throw ParsingError("Indices out of range", filename, linenumber);
 				}
 			}
+			// Converting all negative vertices to positive
+			// for example, an index of -1 refers to the last vertex
+			// TODO optimize, can get kind of slow for large 
+			size_t sizev = obj->vertices.size();
+			size_t sizei = obj->indices.size(); 
+			for (size_t i = 0; i < sizei; i++)
+				if (obj->indices[i] < 0)
+					obj->indices[i] = sizev + obj->indices[i];
 			tokens.clear();
-			//TODO convert all negative vertices
 		}
 		if (obj->name == "")
 			obj->name = "default_name";
