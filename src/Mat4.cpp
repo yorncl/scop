@@ -58,10 +58,25 @@ Mat4 Mat4::new_translate(float x, float y, float z)
 	return m;
 }
 
-Mat4 Mat4::new_rotation()
+Mat4 Mat4::new_rotation(float x, float y, float z)
 {
 	// TODO
-	return new_identity();
+	Mat4 m;
+
+	m[0][0] = cos(x) * cos(y); 
+	m[0][1] = sin(x) * cos(y); 
+	m[0][2] = -sin(y); 
+
+	m[1][0] = cos(x) * sin(y) * sin(z) - sin(x) * cos(z); 
+	m[1][1] = sin(x) * sin(y) * sin(z) + cos(x) * cos(z); 
+	m[1][2] = cos(y) * sin(z); 
+
+	m[2][0] = cos(x) * sin(y) * cos(z) + sin(x) * sin(z); 
+	m[2][1] = sin(x) * sin(y) * cos(z) - cos(x) * sin(z); 
+	m[2][2] = cos(y) * cos(z); 
+
+	m[3][3] = 1; 
+	return m;
 }
 
 Mat4 Mat4::new_projection()
@@ -82,7 +97,6 @@ Mat4 Mat4::new_projection()
  	// 0.0, 		2 * n / ( t- b), 	0.0, 		0.0, 
  	// (r + l) / (r -l ), 	(t + b)/ (t-b), 	-(f+n)/(f-n), 	-1, 
  	// 0.0, 		0.0, 			-2*f*n/(f-n), 	0.0
-	
 	
 	Mat4 m;
 	m[0][0] = 2 * n/ (r - l);

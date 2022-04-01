@@ -22,7 +22,7 @@ class Mat4
 		static Mat4 new_identity();
 		static Mat4 new_scale(float x, float y, float z);
 		static Mat4 new_translate(float x, float y, float z);
-		static Mat4 new_rotation();
+		static Mat4 new_rotation(float x, float y, float z);
 		static Mat4 new_projection();
 
 		Mat4& operator=(const Mat4& m);

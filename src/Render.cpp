@@ -8,7 +8,6 @@
 bool Render::_transition = false;
 bool Render::_direction = false;
 unsigned int Render::_textCoeff;
-unsigned int Render::_angle;
 std::clock_t Render::_startime;
 
 Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
@@ -135,20 +134,22 @@ void Render::load_buffers()
 
 void Render::init_uniforms()
 {
+	// identifier to reference uniforms
 	unsigned int matrix;
+
 	// model matrix (object to world position)
 	matrix = glGetUniformLocation(_shader_program, "modelm");
-	Mat4 m = Mat4::new_identity();
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, m.data());
+	_modelm = Mat4::new_identity();
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _modelm.data());
 
 	// view matrix (world to camera position)
 	matrix = glGetUniformLocation(_shader_program, "viewm");
-	m = Mat4::new_translate(0.0f, 0.0f, -5.0f);
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, m.data());
+	_viewm = Mat4::new_translate(0.0f, 0.0f, -5.0f);
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _viewm.data());
 
 	matrix = glGetUniformLocation(_shader_program, "projm");
-	m = Mat4::new_projection();
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, m.data());
+	_projm = Mat4::new_projection();
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _projm.data());
 
 	// Color-texture blending parameter
 	_textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
@@ -183,10 +184,15 @@ void Render::update_uniforms()
 			glUniform1f(_textCoeff, _direction ? 1.0f - elapsed/100000 : elapsed/100000);
 		}
 	}
-	glUseProgram(_shader_program);
+
+	//updating the rotation of the object
 	float time = glfwGetTime();
-	_angle = glGetUniformLocation(_shader_program, "angle");
-	glUniform1f(_angle, time);
+	(void) time;
+	unsigned int matrix = glGetUniformLocation(_shader_program, "modelm");
+	_modelm = Mat4::new_rotation(0.0f, -0.01f, 0.0f) * _modelm;
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _modelm.data());
+	// binding shader program TODO is it necessary ?
+	glUseProgram(_shader_program);
 }
 
 void Render::render_loop()

@@ -1,9 +1,10 @@
 #ifndef RENDER_HPP
 #define RENDER_HPP
 
+#include <ctime>
 #include "Shader.hpp"
 #include "Object.hpp"
-#include <ctime>
+#include "Mat4.hpp"
 
 class Render
 {
@@ -16,6 +17,9 @@ class Render
 		Shader _vs;
 		Shader _fs;
 		GLuint _shader_program;
+		Mat4 _modelm;
+		Mat4 _viewm;
+		Mat4 _projm;
 
 		Render(GLFWwindow *win, Object *obj);
 
@@ -33,7 +37,6 @@ class Render
 		static bool _transition;
 		static bool _direction;
 		static unsigned int _textCoeff;
-		static unsigned int _angle;
 		static std::clock_t _startime;
 };
 
