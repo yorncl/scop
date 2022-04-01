@@ -74,7 +74,11 @@ void Render::key_callback(GLFWwindow* window, int key, int scancode, int action,
 	(void) mods;
 	(void) window;
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	    exit(0);
+	{
+		glfwDestroyWindow(window);
+		glfwTerminate();
+	    	exit(0);
+	}
 	if (key == GLFW_KEY_T && action == GLFW_RELEASE && !_transition)
 	{
 		_startime = std::clock();
