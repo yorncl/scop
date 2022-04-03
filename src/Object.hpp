@@ -6,6 +6,8 @@
 #include <vector>
 
 #include "Vec3.hpp"
+#include "Mat4.hpp"
+#include "Quat4.hpp"
 
 struct ObjetMalformed : public std::exception
 {
@@ -14,15 +16,30 @@ struct ObjetMalformed : public std::exception
 	}
 };
 
+class Transform
+{
+	Mat4 translate;
+	Quat4 rotation;
+	Vec3<double> scale;
+
+	Transform();
+	~Transform();
+};
+
 class Object
 {
 	public:
-	std::string name;
-	std::vector<Vec3<float>> vertices;
-	std::vector<int> indices;
-	std::vector<Vec3<float>> normals;
-	void calculateCenter();
-	friend std::ostream& operator<<(std::ostream& os, Object& obj);
+		Transorm transform;
+		struct data {
+			std::string name;
+			std::vector<Vec3<float>> vertices;
+			std::vector<int> indices;
+			std::vector<Vec3<float>> normals;
+		}
+		Object();
+		~Object();
+		void readjustVertices();
+		friend std::ostream& operator<<(std::ostream& os, Object& obj);
 };
 
 #endif
