@@ -1,14 +1,23 @@
-#include "Object.hpp"
 #include <iostream>
+#include "Object.hpp"
+#include "Mat4.hpp"
 
 Object::Object()
 {
-
+	transform.translate = Mat4<float>::new_translate(0, 0, 0);
 }
 
 Object::~Object()
 {
 
+}
+
+void Object::translate(float x, float y, float z)
+{
+	Mat4<float>& m = transform.translate;
+	m[3][0] += x; 
+	m[3][1] += y; 
+	m[3][2] += z; 
 }
 
 void Object::readjustVertices()

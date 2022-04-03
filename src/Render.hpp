@@ -17,6 +17,7 @@ class Render
 		Shader _vs;
 		Shader _fs;
 		GLuint _shader_program;
+		unsigned int _textCoeff;
 
 	public:
 		Render(Context *ctx);

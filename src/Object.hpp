@@ -42,7 +42,9 @@ class Object
 		std::string name;
 		Object();
 		~Object();
+		void translate(float x, float y, float z);
 		void readjustVertices();
+
 		friend std::ostream& operator<<(std::ostream& os, Object& obj);
 };
 

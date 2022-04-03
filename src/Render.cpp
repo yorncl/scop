@@ -100,11 +100,11 @@ void Render::init_uniforms()
 {
 	// identifier to reference uniforms
 	unsigned int matrix;
+	Object* obj = _ctx->obj;
 
 	// model matrix (object to world position)
 	matrix = glGetUniformLocation(_shader_program, "modelm");
-	_ctx->modelm = Mat4<float>::new_identity();
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->modelm.data());
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, obj->transform.translate.data());
 
 	// view matrix (world to camera position)
 	matrix = glGetUniformLocation(_shader_program, "viewm");
@@ -116,8 +116,8 @@ void Render::init_uniforms()
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->projm.data());
 
 	// Color-texture blending parameter
-	_ctx->textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
-	glUniform1f(_ctx->textCoeff, 0.0f);
+	_textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
+	glUniform1f(_textCoeff, 0.0f);
 }
 
 void Render::load_texture()
@@ -135,26 +135,12 @@ void Render::load_texture()
 
 void Render::update_uniforms()
 {
-	if (_ctx->transition)
-	{
-		float elapsed = float(std::clock() - _ctx->startime);
-		if (elapsed >= 10000)
-		{
-			_ctx->direction = !_ctx->direction;
-			_ctx->transition = false;
-		}
-		else
-		{
-			glUniform1f(_ctx->textCoeff, _ctx->direction ? 1.0f - elapsed/10000 : elapsed/10000);
-		}
-	}
-
-	//updating the rotation of the object
-	float time = glfwGetTime();
-	(void) time;
+	// TODO, may be not a good idea to update uniforms each frame
+	// even thought it isn't really necessary for a project of this scale
+	glUniform1f(_textCoeff, _ctx->transitionParam);
 	unsigned int matrix = glGetUniformLocation(_shader_program, "modelm");
-	_ctx->modelm = Mat4<float>::new_rotation(0.0f, -0.01f, 0.0f) * _ctx->modelm;
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->modelm.data());
+	Mat4<float> modelm = _ctx->obj->transform.translate * Mat4<float>::new_rotation(0.0f, (float)glfwGetTime() / M_PI_2, 0.0f);
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, modelm.data());
 	// binding shader program TODO is it necessary ?
 	glUseProgram(_shader_program);
 }
@@ -163,12 +149,17 @@ void Render::render_loop()
 {
 	while(!glfwWindowShouldClose(_ctx->window))
 	{
+		// Clear
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
+
+		// update the state
+		_ctx->update();
 		update_uniforms();
+
 		glDrawElements(GL_TRIANGLES, _ctx->obj->data.indices.size(), GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(_ctx->window);
 		glfwPollEvents(); 

@@ -13,18 +13,21 @@ class Context
 		GLFWwindow* window; // reference to the window
 		Object* obj; // the object to be displayed
 
-		Mat4<float> modelm;
 		Mat4<float> viewm;
 		Mat4<float> projm;
 
 		// TODO is there a cleaner way ?
 		bool transition;
 		bool direction;
-		unsigned int textCoeff;
 		std::clock_t startime;
+		float transitionParam;
+
+		size_t input;
 
 		Context(GLFWwindow* w, Object* o);
 		~Context();
+
+		void update();
 };
 
 #endif
