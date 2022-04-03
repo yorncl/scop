@@ -5,11 +5,6 @@
 #include "Mat4.hpp"
 #include "Render.hpp"
 
-bool Render::_transition = false;
-bool Render::_direction = false;
-unsigned int Render::_textCoeff;
-std::clock_t Render::_startime;
-
 struct Render::ShaderError : public std::exception
 {
 	const char* what() const throw() {
@@ -17,10 +12,10 @@ struct Render::ShaderError : public std::exception
 	}
 };
 
-Render::Render(GLFWwindow *window, Object* obj) : _window(window), _obj(obj)
+Render::Render(Context* ctx)
 {
-	glfwSetKeyCallback(window, this->key_callback);
-	glfwMakeContextCurrent(window);
+	_ctx = ctx;
+	glfwMakeContextCurrent(_ctx->window);
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		throw std::runtime_error("Cannot instantiate GLAD");
 	load_shaders();
@@ -76,22 +71,6 @@ void Render::compile_program()
 	glDeleteShader(_fs._id);
 }
 
-void Render::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	(void) scancode;
-	(void) mods;
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		glfwDestroyWindow(window);
-		glfwTerminate();
-	    	exit(0);
-	}
-	if (key == GLFW_KEY_T && action == GLFW_RELEASE && !_transition)
-	{
-		_startime = std::clock();
-		_transition = true;
-	}
-}
 
 void Render::load_buffers()
 {
@@ -102,18 +81,18 @@ void Render::load_buffers()
 	// Vertex positions
 	glGenBuffers(1, &_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferData(GL_ARRAY_BUFFER, _obj->data.vertices.size() * sizeof(Vec3<float>), _obj->data.vertices.data() , GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, _ctx->obj->data.vertices.size() * sizeof(Vec3<float>), _ctx->obj->data.vertices.data() , GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3<float>), 0);
 
 	// Enable vertex attrib
         glEnableVertexAttribArray(0);
 
 	// faces
-	if(_obj->data.indices.size() > 0)
+	if(_ctx->obj->data.indices.size() > 0)
 	{
 		glGenBuffers(1, &_EBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->data.indices.size() * sizeof(GLuint), _obj->data.indices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _ctx->obj->data.indices.size() * sizeof(GLuint), _ctx->obj->data.indices.data(), GL_STATIC_DRAW);
 	}
 }
 
@@ -124,21 +103,21 @@ void Render::init_uniforms()
 
 	// model matrix (object to world position)
 	matrix = glGetUniformLocation(_shader_program, "modelm");
-	_modelm = Mat4<float>::new_identity();
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, _modelm.data());
+	_ctx->modelm = Mat4<float>::new_identity();
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->modelm.data());
 
 	// view matrix (world to camera position)
 	matrix = glGetUniformLocation(_shader_program, "viewm");
-	_viewm = Mat4<float>::new_translate(0.0f, 0.0f, -5.0f);
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, _viewm.data());
+	_ctx->viewm = Mat4<float>::new_translate(0.0f, 0.0f, -5.0f);
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->viewm.data());
 
 	matrix = glGetUniformLocation(_shader_program, "projm");
-	_projm = Mat4<float>::new_projection();
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, _projm.data());
+	_ctx->projm = Mat4<float>::new_projection();
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->projm.data());
 
 	// Color-texture blending parameter
-	_textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
-	glUniform1f(_textCoeff, 0.0f);
+	_ctx->textCoeff = glGetUniformLocation(_shader_program, "textCoeff");
+	glUniform1f(_ctx->textCoeff, 0.0f);
 }
 
 void Render::load_texture()
@@ -156,17 +135,17 @@ void Render::load_texture()
 
 void Render::update_uniforms()
 {
-	if (_transition)
+	if (_ctx->transition)
 	{
-		float elapsed = float(std::clock() - _startime);
+		float elapsed = float(std::clock() - _ctx->startime);
 		if (elapsed >= 10000)
 		{
-			_direction = !_direction;
-			_transition = false;
+			_ctx->direction = !_ctx->direction;
+			_ctx->transition = false;
 		}
 		else
 		{
-			glUniform1f(_textCoeff, _direction ? 1.0f - elapsed/10000 : elapsed/10000);
+			glUniform1f(_ctx->textCoeff, _ctx->direction ? 1.0f - elapsed/10000 : elapsed/10000);
 		}
 	}
 
@@ -174,15 +153,15 @@ void Render::update_uniforms()
 	float time = glfwGetTime();
 	(void) time;
 	unsigned int matrix = glGetUniformLocation(_shader_program, "modelm");
-	_modelm = Mat4<float>::new_rotation(0.0f, -0.01f, 0.0f) * _modelm;
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, _modelm.data());
+	_ctx->modelm = Mat4<float>::new_rotation(0.0f, -0.01f, 0.0f) * _ctx->modelm;
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->modelm.data());
 	// binding shader program TODO is it necessary ?
 	glUseProgram(_shader_program);
 }
 
 void Render::render_loop()
 {
-	while(!glfwWindowShouldClose(_window))
+	while(!glfwWindowShouldClose(_ctx->window))
 	{
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -190,8 +169,8 @@ void Render::render_loop()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
 		update_uniforms();
-		glDrawElements(GL_TRIANGLES, _obj->data.indices.size(), GL_UNSIGNED_INT, 0);
-		glfwSwapBuffers(_window);
+		glDrawElements(GL_TRIANGLES, _ctx->obj->data.indices.size(), GL_UNSIGNED_INT, 0);
+		glfwSwapBuffers(_ctx->window);
 		glfwPollEvents(); 
 	}
 }

@@ -5,26 +5,21 @@
 #include "Shader.hpp"
 #include "Object.hpp"
 #include "Mat4.hpp"
+#include "Context.hpp"
 
 class Render
 {
-	public:
-		GLFWwindow* _window;
-		// the actual object
-		Object* _obj;
-		// OpenGL ids
+	private:
+		Context* _ctx;
 		GLuint _VAO;
 		GLuint _VBO;
 		GLuint _EBO;
 		Shader _vs;
 		Shader _fs;
 		GLuint _shader_program;
-		// uniforms matrices
-		Mat4<float> _modelm;
-		Mat4<float> _viewm;
-		Mat4<float> _projm;
 
-		Render(GLFWwindow *win, Object *obj);
+	public:
+		Render(Context *ctx);
 
 		void load_shaders();
 		void compile_program();
@@ -35,13 +30,6 @@ class Render
 		void init_uniforms();
 		void load_texture();
 		void update_uniforms();
-
-		// Not really pretty but hey, it works
-		// all static so they can be accessed in static callbacks
-		static bool _transition;
-		static bool _direction;
-		static unsigned int _textCoeff;
-		static std::clock_t _startime;
 
 		struct ShaderError;
 };

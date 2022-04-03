@@ -2,6 +2,7 @@
 #include "Object.hpp"
 #include "Parser.hpp"
 #include "Render.hpp"
+#include "Input.hpp"
 
 #define WINDOW_INIT_WIDTH 1000
 #define WINDOW_INIT_HEIGHT 1000
@@ -49,6 +50,9 @@ int main(int ac, char** av)
 
 	// Creating the window
 	GLFWwindow *window = init_window();
+	Context* ctx = new Context(window, obj);
+	glfwSetKeyCallback(window, Input::key_callback);
+	glfwSetWindowUserPointer(window, ctx);
 	try
 	{
 		Render r(window, obj);
@@ -62,4 +66,5 @@ int main(int ac, char** av)
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	delete obj;
+	delete ctx;
 }
