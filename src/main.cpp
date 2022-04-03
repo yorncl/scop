@@ -55,7 +55,7 @@ int main(int ac, char** av)
 	glfwSetWindowUserPointer(window, ctx);
 	try
 	{
-		Render r(window, obj);
+		Render r(ctx);
 		r.render_loop();
 	}
 	catch(std::exception &e)

@@ -11,7 +11,7 @@ class Context
 {
 	public:
 		GLFWwindow* window; // reference to the window
-		Object* o; // the object to be displayed
+		Object* obj; // the object to be displayed
 
 		Mat4<float> modelm;
 		Mat4<float> viewm;
@@ -23,7 +23,7 @@ class Context
 		unsigned int textCoeff;
 		std::clock_t startime;
 
-		Context(GLFWwindow* w);
+		Context(GLFWwindow* w, Object* o);
 		~Context();
 };
 

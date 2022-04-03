@@ -2,7 +2,7 @@
 #include "Input.hpp"
 #include "Context.hpp"
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	(void) scancode;
 	(void) mods;
