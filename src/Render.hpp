@@ -20,9 +20,9 @@ class Render
 		Shader _fs;
 		GLuint _shader_program;
 		// uniforms matrices
-		Mat4 _modelm;
-		Mat4 _viewm;
-		Mat4 _projm;
+		Mat4<float> _modelm;
+		Mat4<float> _viewm;
+		Mat4<float> _projm;
 
 		Render(GLFWwindow *win, Object *obj);
 

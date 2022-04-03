@@ -102,18 +102,18 @@ void Render::load_buffers()
 	// Vertex positions
 	glGenBuffers(1, &_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferData(GL_ARRAY_BUFFER, _obj->vertices.size() * sizeof(Vec3<float>), _obj->vertices.data() , GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, _obj->data.vertices.size() * sizeof(Vec3<float>), _obj->data.vertices.data() , GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3<float>), 0);
 
 	// Enable vertex attrib
         glEnableVertexAttribArray(0);
 
 	// faces
-	if(_obj->indices.size() > 0)
+	if(_obj->data.indices.size() > 0)
 	{
 		glGenBuffers(1, &_EBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->indices.size() * sizeof(GLuint), _obj->indices.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _obj->data.indices.size() * sizeof(GLuint), _obj->data.indices.data(), GL_STATIC_DRAW);
 	}
 }
 
@@ -124,16 +124,16 @@ void Render::init_uniforms()
 
 	// model matrix (object to world position)
 	matrix = glGetUniformLocation(_shader_program, "modelm");
-	_modelm = Mat4::new_identity();
+	_modelm = Mat4<float>::new_identity();
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, _modelm.data());
 
 	// view matrix (world to camera position)
 	matrix = glGetUniformLocation(_shader_program, "viewm");
-	_viewm = Mat4::new_translate(0.0f, 0.0f, -5.0f);
+	_viewm = Mat4<float>::new_translate(0.0f, 0.0f, -5.0f);
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, _viewm.data());
 
 	matrix = glGetUniformLocation(_shader_program, "projm");
-	_projm = Mat4::new_projection();
+	_projm = Mat4<float>::new_projection();
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, _projm.data());
 
 	// Color-texture blending parameter
@@ -174,7 +174,7 @@ void Render::update_uniforms()
 	float time = glfwGetTime();
 	(void) time;
 	unsigned int matrix = glGetUniformLocation(_shader_program, "modelm");
-	_modelm = Mat4::new_rotation(0.0f, -0.01f, 0.0f) * _modelm;
+	_modelm = Mat4<float>::new_rotation(0.0f, -0.01f, 0.0f) * _modelm;
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, _modelm.data());
 	// binding shader program TODO is it necessary ?
 	glUseProgram(_shader_program);
@@ -190,7 +190,7 @@ void Render::render_loop()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
 		update_uniforms();
-		glDrawElements(GL_TRIANGLES, _obj->indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, _obj->data.indices.size(), GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(_window);
 		glfwPollEvents(); 
 	}

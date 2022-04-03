@@ -7,33 +7,13 @@
 #include <cmath>
 
 // 4 by 4 matrix in column-major representation
-typename <class T>;
+template <typename T>
 class Mat4
 {
 	private:
 		T _data[16];
 
 	public:
-
-		Mat4();
-		Mat4(const Mat4& m);
-		Mat4(T value);
-		~Mat4();
-
-		T* data(); // TODO should it return a const object
-
-		static Mat4 new_identity();
-		static Mat4 new_scale(T x, T y, T z);
-		static Mat4 new_translate(T x, T y, T z);
-		static Mat4 new_rotation(T x, T y, T z);
-		static Mat4 new_projection();
-
-		Mat4& operator=(const Mat4& m);
-		friend Mat4 operator*(const Mat4& m, T f); // scalar multiplication
-		friend Mat4 operator*(const Mat4& m1, const Mat4& m2); // scalar multiplication
-		T* operator[](size_t i);
-		const T* operator[](size_t i) const;
-		friend std::ostream& operator<<(std::ostream &os, const Mat4&);
 
 		Mat4()
 		{
@@ -62,7 +42,7 @@ class Mat4
 			return _data;
 		}
 
-		Mat4 new_identity()
+		static Mat4 new_identity()
 		{
 			Mat4 m;
 			m[0][0] = 1.0f; 
@@ -72,7 +52,7 @@ class Mat4
 			return m;
 		}
 
-		Mat4 new_scale(T x, T y, T z)
+		static Mat4 new_scale(T x, T y, T z)
 		{
 			Mat4 m;
 			m[0][0] = x; 
@@ -82,7 +62,7 @@ class Mat4
 			return m;
 		}
 
-		Mat4 new_translate(T x, T y, T z)
+		static Mat4 new_translate(T x, T y, T z)
 		{
 			Mat4 m = new_identity();
 			m[3][0] = x; 
@@ -91,7 +71,7 @@ class Mat4
 			return m;
 		}
 
-		Mat4 new_rotation(T x, T y, T z)
+		static Mat4 new_rotation(T x, T y, T z)
 		{
 			Mat4 m;
 
@@ -111,7 +91,7 @@ class Mat4
 			return m;
 		}
 
-		Mat4 new_projection()
+		static Mat4 new_projection()
 		{
 			 T n = 0.1;
 			 T f = -100;
@@ -161,45 +141,52 @@ class Mat4
 			return &_data[i * 4];
 		}
 
-		Mat4 operator*(const Mat4& m, T f)
-		{
-			Mat4 r;
-			for (size_t i = 0; i < 16; i++)
-				r._data[i] = m._data[i] * f;
-			return r;
-		}
 
-		Mat4 operator*(T f, const Mat4& m)
-		{
-			return m * f;
-		}
-
-		Mat4 operator*(const Mat4& m1, const Mat4& m2)
-		{
-			Mat4 r;
-			for (size_t j = 0; j < 4; j++)
-			{
-				for (size_t i = 0; i < 4; i++)
-					r[j][i] = m1[0][i] * m2[j][0] + m1[1][i] * m2[j][1] + m1[2][i] * m2[j][2] + m1[3][i] * m2[j][3];
-			}
-			return r;
-		}
-
-		std::ostream& operator<<(std::ostream &os, const Mat4& m)
-		{
-			os << "Mat4 :" << std::endl;
-			for(size_t i = 0; i < 4; i++)
-			{
-				for(size_t j = 0; j < 4; j++)
-					os << m[j][i] << ' ';
-				os << std::endl;
-			}
-			os << "Raw Mat4: " << std::endl;
-			for (size_t i = 0; i < 16; i++)
-				std::cout << m._data[i];
-			os << std::endl;
-			return os;
-		}
 };
+
+template <typename T>
+std::ostream& operator<<(std::ostream &os, const Mat4<T>& m)
+{
+	os << "Mat4 :" << std::endl;
+	for(size_t i = 0; i < 4; i++)
+	{
+		for(size_t j = 0; j < 4; j++)
+			os << m[j][i] << ' ';
+		os << std::endl;
+	}
+	os << "Raw Mat4: " << std::endl;
+	const T* data = m.data();
+	for (size_t i = 0; i < 16; i++)
+		std::cout << data[i];
+	os << std::endl;
+	return os;
+}
+
+template <typename T>
+Mat4<T> operator*(const Mat4<T>& m, T f)
+{
+	Mat4<T> r;
+	for (size_t i = 0; i < 16; i++)
+		r._data[i] = m._data[i] * f;
+	return r;
+}
+
+template <typename T>
+Mat4<T> operator*(T f, const Mat4<T>& m)
+{
+	return m * f;
+}
+
+template <typename T>
+Mat4<T> operator*(const Mat4<T>& m1, const Mat4<T>& m2)
+{
+	Mat4<T> r;
+	for (size_t j = 0; j < 4; j++)
+	{
+		for (size_t i = 0; i < 4; i++)
+			r[j][i] = m1[0][i] * m2[j][0] + m1[1][i] * m2[j][1] + m1[2][i] * m2[j][2] + m1[3][i] * m2[j][3];
+	}
+	return r;
+}
 
 #endif

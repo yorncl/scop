@@ -86,7 +86,7 @@ Object* Parser::read_obj(char* filename)
 					v.x = std::stof(tokens[1]);
 					v.y = std::stof(tokens[2]);
 					v.z = std::stof(tokens[3]);
-					obj->vertices.push_back(v);
+					obj->data.vertices.push_back(v);
 				}
 				catch(std::invalid_argument &e)
 				{
@@ -104,18 +104,18 @@ Object* Parser::read_obj(char* filename)
 					throw ParsingError("Needs at least 3 vertices index", filename, linenumber);
 				try
 				{
-					obj->indices.push_back(std::stoi(tokens[1]) - 1);
-					obj->indices.push_back(std::stoi(tokens[2]) - 1);
-					obj->indices.push_back(std::stoi(tokens[3]) - 1);
+					obj->data.indices.push_back(std::stoi(tokens[1]) - 1);
+					obj->data.indices.push_back(std::stoi(tokens[2]) - 1);
+					obj->data.indices.push_back(std::stoi(tokens[3]) - 1);
 					// This is abysmally ugly
 					// I don't want to implement a complete, complexe .obj parser
 					// So you'll have to handle this herrendous hardcoded square triangulation
 					// the -1 is because vertices indices start at 1 in .obj, not in OpengGL if I remember correctly
 					if (tokens.size() > 4)
 					{
-						obj->indices.push_back(std::stoi(tokens[1]) - 1);
-						obj->indices.push_back(std::stoi(tokens[3]) - 1);
-						obj->indices.push_back(std::stoi(tokens[4]) - 1);
+						obj->data.indices.push_back(std::stoi(tokens[1]) - 1);
+						obj->data.indices.push_back(std::stoi(tokens[3]) - 1);
+						obj->data.indices.push_back(std::stoi(tokens[4]) - 1);
 					}
 				}
 				catch(std::invalid_argument &e)
@@ -130,11 +130,11 @@ Object* Parser::read_obj(char* filename)
 			// Converting all negative vertices to positive
 			// for example, an index of -1 refers to the last vertex
 			// TODO optimize, can get kind of slow for large 
-			size_t sizev = obj->vertices.size();
-			size_t sizei = obj->indices.size(); 
+			size_t sizev = obj->data.vertices.size();
+			size_t sizei = obj->data.indices.size(); 
 			for (size_t i = 0; i < sizei; i++)
-				if (obj->indices[i] < 0)
-					obj->indices[i] = sizev + obj->indices[i];
+				if (obj->data.indices[i] < 0)
+					obj->data.indices[i] = sizev + obj->data.indices[i];
 			tokens.clear();
 		}
 		if (obj->name == "")
