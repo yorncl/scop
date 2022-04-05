@@ -9,6 +9,7 @@
 #define YNEG 1 << 3
 #define ZPOS 1 << 4
 #define ZNEG 1 << 5
+#define TRANSITIONSTART 1 << 6
 
 namespace Input
 {

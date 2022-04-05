@@ -23,15 +23,20 @@ void Context::update()
 			(input & YPOS ? 0.1f : 0) + (input & YNEG ? -0.1f : 0), 
 			(input & ZPOS ? 0.1f : 0) + (input & ZNEG ? -0.1f : 0)
 			);
+	if (input & TRANSITIONSTART && !transition)
+	{
+		transition = true;
+		startime = std::clock();
+	}
 
 	if (transition)
 	{
 		float elapsed = float(std::clock() - startime);
+		transitionParam = direction ? 1.0f - elapsed/10000 : elapsed/10000;
 		if (elapsed >= 10000)
 		{
 			direction = !direction;
 			transition = false;
-			transitionParam = direction ? 1.0f - elapsed/10000 : elapsed/10000;
 		}
 	}
 }

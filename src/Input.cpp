@@ -33,6 +33,8 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 			ctx->input |= ZNEG;
 		if (key == GLFW_KEY_S)
 			ctx->input |= ZPOS;
+		if (key == GLFW_KEY_T)
+			ctx->input |= TRANSITIONSTART;
 	}
 
 	if (action == GLFW_RELEASE)
@@ -52,6 +54,8 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 			ctx->input ^= ZNEG;
 		if (key == GLFW_KEY_S)
 			ctx->input ^= ZPOS;
+		if (key == GLFW_KEY_T)
+			ctx->input ^= TRANSITIONSTART;
 	}
 
 	if (key == GLFW_KEY_T && !ctx->transition)
