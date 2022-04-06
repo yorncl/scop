@@ -64,3 +64,12 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		ctx->transition = true;
 	}
 }
+
+void Input::resize_callback(GLFWwindow* window, int width, int height)
+{
+	Context* ctx = (Context*)glfwGetWindowUserPointer(window);
+	ctx->updateWindowSize(width, height);
+}
+
+
+

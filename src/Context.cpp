@@ -41,6 +41,11 @@ void Context::update()
 	}
 }
 
+void Context::updateWindowSize(int w, int h)
+{
+	projm = Mat4<float>::new_projection(90, (double)w/h);
+}
+
 Context::~Context()
 {
 }

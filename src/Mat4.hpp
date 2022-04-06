@@ -91,17 +91,18 @@ class Mat4
 			return m;
 		}
 
-		static Mat4 new_projection()
+		static Mat4 new_projection(double fovx, double aspratio)
 		{
 			 T n = 0.1;
 			 T f = -100;
 
-			 T scale = tan(90 * M_PI_2 /180) * n;
+			 T hx = tan((fovx/2) * (M_PI /180)) * n;
+			 T hy = hx / aspratio; 
 
-			 T r = 1 * scale;
+			 T r = hx;
 			 T l = -r;
 
-			 T t = scale;
+			 T t = hy;
 			 T b = -t;
 
 			// in column-major order, this is the protjection matrix

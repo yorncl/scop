@@ -4,8 +4,8 @@
 #include "Render.hpp"
 #include "Input.hpp"
 
-#define WINDOW_INIT_WIDTH 1000
-#define WINDOW_INIT_HEIGHT 1000
+#define WINDOW_INIT_WIDTH 2000
+#define WINDOW_INIT_HEIGHT 500
 
 static void glfw_error_callback(int code, const char* msg)
 {
@@ -51,7 +51,10 @@ int main(int ac, char** av)
 	// Creating the window
 	GLFWwindow *window = init_window();
 	Context* ctx = new Context(window, obj);
+	ctx->updateWindowSize(WINDOW_INIT_WIDTH, WINDOW_INIT_HEIGHT);
+
 	glfwSetKeyCallback(window, Input::key_callback);
+	glfwSetWindowSizeCallback(window, Input::resize_callback);
 	glfwSetWindowUserPointer(window, ctx);
 	try
 	{

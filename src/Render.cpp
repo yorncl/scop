@@ -112,7 +112,7 @@ void Render::init_uniforms()
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->viewm.data());
 
 	matrix = glGetUniformLocation(_shader_program, "projm");
-	_ctx->projm = Mat4<float>::new_projection();
+	_ctx->projm = Mat4<float>::new_projection(90, 4);
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->projm.data());
 
 	// Color-texture blending parameter
@@ -143,6 +143,9 @@ void Render::update_uniforms()
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, modelm.data());
 	// binding shader program TODO is it necessary ?
 	glUseProgram(_shader_program);
+
+	matrix = glGetUniformLocation(_shader_program, "projm");
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->projm.data());
 }
 
 void Render::render_loop()

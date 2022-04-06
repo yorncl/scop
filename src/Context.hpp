@@ -28,6 +28,7 @@ class Context
 		~Context();
 
 		void update();
+		void updateWindowSize(int w, int h);
 };
 
 #endif
