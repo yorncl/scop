@@ -9,6 +9,7 @@ Context::Context(GLFWwindow *w, Object *o)
 	obj = o;
 	input = 0;
 	transitionParam = 0;
+	viewm = Mat4<float>::new_translate(0.0f, 0.0f, -5.0f);
 }
 
 // updates the context based on :
@@ -39,10 +40,15 @@ void Context::update()
 			transition = false;
 		}
 	}
+	modelm = obj->transform.translate * Mat4<float>::new_rotation(0.0f, (float)glfwGetTime() / M_PI_2, 0.0f);
 }
 
 void Context::updateWindowSize(int w, int h)
 {
+	(void) w;
+	(void) h;
+	glViewport(0, 0, w, h);
+	input = 0;
 	projm = Mat4<float>::new_projection(90, (double)w/h);
 }
 

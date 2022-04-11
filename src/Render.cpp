@@ -108,11 +108,9 @@ void Render::init_uniforms()
 
 	// view matrix (world to camera position)
 	matrix = glGetUniformLocation(_shader_program, "viewm");
-	_ctx->viewm = Mat4<float>::new_translate(0.0f, 0.0f, -5.0f);
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->viewm.data());
 
 	matrix = glGetUniformLocation(_shader_program, "projm");
-	_ctx->projm = Mat4<float>::new_projection(90, 4);
 	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->projm.data());
 
 	// Color-texture blending parameter
@@ -139,8 +137,7 @@ void Render::update_uniforms()
 	// even thought it isn't really necessary for a project of this scale
 	glUniform1f(_textCoeff, _ctx->transitionParam);
 	unsigned int matrix = glGetUniformLocation(_shader_program, "modelm");
-	Mat4<float> modelm = _ctx->obj->transform.translate * Mat4<float>::new_rotation(0.0f, (float)glfwGetTime() / M_PI_2, 0.0f);
-	glUniformMatrix4fv(matrix, 1, GL_FALSE, modelm.data());
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, _ctx->modelm.data());
 	// binding shader program TODO is it necessary ?
 	glUseProgram(_shader_program);
 

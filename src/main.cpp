@@ -4,8 +4,8 @@
 #include "Render.hpp"
 #include "Input.hpp"
 
-#define WINDOW_INIT_WIDTH 2000
-#define WINDOW_INIT_HEIGHT 500
+#define WINDOW_INIT_WIDTH 1000
+#define WINDOW_INIT_HEIGHT 1000
 
 static void glfw_error_callback(int code, const char* msg)
 {

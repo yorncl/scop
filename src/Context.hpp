@@ -15,6 +15,7 @@ class Context
 
 		Mat4<float> viewm;
 		Mat4<float> projm;
+		Mat4<float> modelm;
 
 		// TODO is there a cleaner way ?
 		bool transition;
