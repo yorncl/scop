@@ -42,6 +42,11 @@ class Mat4
 			return _data;
 		}
 
+		const T* data() const
+		{
+			return _data;
+		}
+
 		static Mat4 new_identity()
 		{
 			Mat4 m;
@@ -142,7 +147,8 @@ class Mat4
 			return &_data[i * 4];
 		}
 
-
+	template <typename U>
+	friend Mat4<U> operator*(const Mat4<U>& m, U f);
 };
 
 template <typename T>

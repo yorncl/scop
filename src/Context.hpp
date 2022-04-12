@@ -16,8 +16,9 @@ class Context
 		Mat4<float> viewm;
 		Mat4<float> projm;
 		Mat4<float> modelm;
+		Mat4<float> scalem;
 
-		// TODO is there a cleaner way ?
+		float scaleFactor;
 		bool transition;
 		bool direction;
 		std::clock_t startime;

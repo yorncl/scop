@@ -35,6 +35,10 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 			ctx->input |= ZPOS;
 		if (key == GLFW_KEY_T)
 			ctx->input |= TRANSITIONSTART;
+		if (key == GLFW_KEY_MINUS)
+			ctx->input |= SCALEDOWN;
+		if (mods & GLFW_MOD_SHIFT && key == GLFW_KEY_EQUAL)
+			ctx->input |= SCALEUP;
 	}
 
 	if (action == GLFW_RELEASE)
@@ -56,6 +60,10 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 			ctx->input &= ~ZPOS;
 		if (key == GLFW_KEY_T)
 			ctx->input &= ~TRANSITIONSTART;
+		if (key == GLFW_KEY_MINUS)
+			ctx->input &= ~SCALEDOWN;
+		if (mods & GLFW_MOD_SHIFT && key == GLFW_KEY_EQUAL)
+			ctx->input &= ~SCALEUP;
 	}
 
 	if (key == GLFW_KEY_T && !ctx->transition)

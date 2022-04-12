@@ -10,6 +10,8 @@ Context::Context(GLFWwindow *w, Object *o)
 	input = 0;
 	transitionParam = 0;
 	viewm = Mat4<float>::new_translate(0.0f, 0.0f, -5.0f);
+	scaleFactor = 1.0f;
+	scalem = Mat4<float>::new_identity() * scaleFactor;
 }
 
 // updates the context based on :
@@ -40,7 +42,28 @@ void Context::update()
 			transition = false;
 		}
 	}
-	modelm = obj->transform.translate * Mat4<float>::new_rotation(0.0f, (float)glfwGetTime() / M_PI_2, 0.0f);
+	if (input & SCALEUP)
+	{
+		std::cout << "SCALE UP" << std::endl;
+		scaleFactor += 0.05;
+		scalem = Mat4<float>::new_identity() * scaleFactor;
+		scalem[3][3] = 1.0f;
+		std::cout << scalem;
+	}
+	if (input & SCALEDOWN)
+	{
+		std::cout << "SCALE DOWN" << std::endl;
+		scaleFactor -= 0.05;
+		if (scaleFactor < 0.1)
+			scaleFactor = 0.05;
+		scalem = Mat4<float>::new_identity() * scaleFactor;
+		scalem[3][3] = 1.0f;
+		std::cout << scalem;
+	}
+
+	modelm = 
+			obj->transform.translate
+			* Mat4<float>::new_rotation(0.0f, (float)glfwGetTime() / M_PI_2, 0.0f) * scalem;
 }
 
 void Context::updateWindowSize(int w, int h)

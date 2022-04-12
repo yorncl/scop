@@ -10,6 +10,8 @@
 #define ZPOS (1 << 4)
 #define ZNEG (1 << 5)
 #define TRANSITIONSTART (1 << 6)
+#define SCALEUP (1 << 7)
+#define SCALEDOWN (1 << 8)
 
 namespace Input
 {
