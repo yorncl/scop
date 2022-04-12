@@ -122,7 +122,7 @@ void Render::load_texture()
 {
 	// Loading the cobblestone texture
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load("resources/cobble.jpg", &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load("resources/kitten.jpeg", &width, &height, &nrChannels, 0);
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
