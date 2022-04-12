@@ -41,21 +41,21 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	{
 		// X
 		if (key == GLFW_KEY_A)
-			ctx->input ^= XNEG;
+			ctx->input &= ~XNEG;
 		if (key == GLFW_KEY_D)
-			ctx->input ^= XPOS;
+			ctx->input &= ~XPOS;
 		// Y
 		if (key == GLFW_KEY_J)
-			ctx->input ^= YNEG;
+			ctx->input &= ~YNEG;
 		if (key == GLFW_KEY_K)
-			ctx->input ^= YPOS;
+			ctx->input &= ~YPOS;
 		// Z
 		if (key == GLFW_KEY_W)
-			ctx->input ^= ZNEG;
+			ctx->input &= ~ZNEG;
 		if (key == GLFW_KEY_S)
-			ctx->input ^= ZPOS;
+			ctx->input &= ~ZPOS;
 		if (key == GLFW_KEY_T)
-			ctx->input ^= TRANSITIONSTART;
+			ctx->input &= ~TRANSITIONSTART;
 	}
 
 	if (key == GLFW_KEY_T && !ctx->transition)
