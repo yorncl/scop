@@ -10,8 +10,6 @@ out vec2 TexCoord;
 out vec3 FragPos;
 
 void main() {
- const float PI_2 = 1.57079632679489661923;
-
  gl_Position = projm * viewm * modelm * vec4(position, 1); // position sur l'ecran
  TexCoord = position.yz;
 }
