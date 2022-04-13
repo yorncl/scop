@@ -10,6 +10,7 @@ Context::Context(GLFWwindow *w, Object *o)
 
 void Context::reset()
 {
+	rotationPaused = false;
 	transition = false;
 	direction = false;
 	input = 0;
@@ -18,6 +19,11 @@ void Context::reset()
 	scaleFactor = 1.0f;
 	scalem = Mat4<float>::new_identity() * scaleFactor;
 	obj->transform.translate = Mat4<float>::new_translate(0.0f, 0.0f, 0.0f);
+}
+
+void Context::toggleRotationPause()
+{
+	rotationPaused = !rotationPaused;
 }
 
 // updates the context based on :
@@ -62,9 +68,9 @@ void Context::update()
 		scalem = Mat4<float>::new_identity() * scaleFactor;
 		scalem[3][3] = 1.0f;
 	}
-	modelm = obj->transform.translate
-			* Mat4<float>::new_rotation(0.0f, (float)glfwGetTime() / M_PI_2, 0.0f)
-			* scalem;
+	if (!rotationPaused)
+		rotm = Mat4<float>::new_rotation(0.0f, (float)glfwGetTime() / M_PI_2, 0.0f);
+	modelm = obj->transform.translate * rotm * scalem;
 }
 
 void Context::updateWindowSize(int w, int h)

@@ -66,6 +66,8 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 			ctx->input &= ~SCALEUP;
 		if (key == GLFW_KEY_R)
 			ctx->reset(); // Not the best to do that here
+		if (key == GLFW_KEY_SPACE)
+			ctx->toggleRotationPause(); // Not the best to do that here
 	}
 
 	if (key == GLFW_KEY_T && !ctx->transition)

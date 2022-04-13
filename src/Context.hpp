@@ -17,8 +17,10 @@ class Context
 		Mat4<float> projm;
 		Mat4<float> modelm;
 		Mat4<float> scalem;
+		Mat4<float> rotm;
 
 		float scaleFactor;
+		bool rotationPaused;
 		bool transition;
 		bool direction;
 		std::clock_t startime;
@@ -30,6 +32,7 @@ class Context
 		~Context();
 
 		void reset();
+		void toggleRotationPause();
 		void update();
 		void updateWindowSize(int w, int h);
 };
