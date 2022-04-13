@@ -32,6 +32,9 @@ class ObjData {
 		std::vector<Vec3<float>> vertices;
 		std::vector<int> indices;
 		std::vector<Vec3<float>> normals;
+
+		ObjData(){};
+		~ObjData(){};
 };
 
 class Object

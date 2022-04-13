@@ -44,21 +44,17 @@ void Context::update()
 	}
 	if (input & SCALEUP)
 	{
-		std::cout << "SCALE UP" << std::endl;
 		scaleFactor += 0.05;
 		scalem = Mat4<float>::new_identity() * scaleFactor;
 		scalem[3][3] = 1.0f;
-		std::cout << scalem;
 	}
 	if (input & SCALEDOWN)
 	{
-		std::cout << "SCALE DOWN" << std::endl;
 		scaleFactor -= 0.05;
 		if (scaleFactor < 0.1)
 			scaleFactor = 0.05;
 		scalem = Mat4<float>::new_identity() * scaleFactor;
 		scalem[3][3] = 1.0f;
-		std::cout << scalem;
 	}
 
 	modelm = 

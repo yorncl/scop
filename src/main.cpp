@@ -41,7 +41,7 @@ int main(int ac, char** av)
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Error while parsing" << std::endl;
+		std::cerr << "Error while trying to parse file" << std::endl;
 		return 1;
 	}
 
