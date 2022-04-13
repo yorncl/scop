@@ -136,6 +136,8 @@ Object* Parser::read_obj(char* filename)
 		// TODO optimize, can get kind of slow for large 
 		size_t sizev = obj->data.vertices.size();
 		size_t sizei = obj->data.indices.size(); 
+		if (sizev == 0 || sizei == 0)
+			throw std::runtime_error("Object appears to be malformed");
 		for (size_t i = 0; i < sizei; i++)
 			if (obj->data.indices[i] < 0)
 				obj->data.indices[i] = sizev + obj->data.indices[i];
