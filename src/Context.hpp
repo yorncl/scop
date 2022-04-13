@@ -29,6 +29,7 @@ class Context
 		Context(GLFWwindow* w, Object* o);
 		~Context();
 
+		void reset();
 		void update();
 		void updateWindowSize(int w, int h);
 };
