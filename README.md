@@ -13,8 +13,10 @@ You can trigger the fade-in of a kitten texture by pressing `T`, I don't recomme
 ## Showcase
 
 42 school logo
+
 ![](https://github.com/yorncl/scop/blob/main/meta/42.gif)
 
 Standford bunny
+
 ![](https://github.com/yorncl/scop/blob/main/meta/bunny.gif)
 
