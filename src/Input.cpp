@@ -20,9 +20,9 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		}
 		// X
 		if (key == GLFW_KEY_A)
-			ctx->input |= XNEG;
-		if (key == GLFW_KEY_D)
 			ctx->input |= XPOS;
+		if (key == GLFW_KEY_D)
+			ctx->input |= XNEG;
 		// Y
 		if (key == GLFW_KEY_J)
 			ctx->input |= YNEG;
@@ -30,9 +30,9 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 			ctx->input |= YPOS;
 		// Z
 		if (key == GLFW_KEY_W)
-			ctx->input |= ZNEG;
-		if (key == GLFW_KEY_S)
 			ctx->input |= ZPOS;
+		if (key == GLFW_KEY_S)
+			ctx->input |= ZNEG;
 		if (key == GLFW_KEY_T)
 			ctx->input |= TRANSITIONSTART;
 		if (key == GLFW_KEY_MINUS)
@@ -45,9 +45,9 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	{
 		// X
 		if (key == GLFW_KEY_A)
-			ctx->input &= ~XNEG;
-		if (key == GLFW_KEY_D)
 			ctx->input &= ~XPOS;
+		if (key == GLFW_KEY_D)
+			ctx->input &= ~XNEG;
 		// Y
 		if (key == GLFW_KEY_J)
 			ctx->input &= ~YNEG;
@@ -55,9 +55,9 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 			ctx->input &= ~YPOS;
 		// Z
 		if (key == GLFW_KEY_W)
-			ctx->input &= ~ZNEG;
-		if (key == GLFW_KEY_S)
 			ctx->input &= ~ZPOS;
+		if (key == GLFW_KEY_S)
+			ctx->input &= ~ZNEG;
 		if (key == GLFW_KEY_T)
 			ctx->input &= ~TRANSITIONSTART;
 		if (key == GLFW_KEY_MINUS)
